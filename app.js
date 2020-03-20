@@ -534,11 +534,15 @@ Kush,Wookie,Wookies,Wreckage,WSU,WTF,X-File,X-Files,X-tra Chz,X-Wing,X18 Pure
 Pakistani,XJ-13`;
 
 var effects = `Seizures,Depression,Spasticity,Headaches,Cramps,Muscle
-Spasms,Fatigue,Eye Pressure,Inflammation,Stress,Insomnia,Pain,Lack of
+Spasms,Fatigue,Eye Pressure,Inflammation,Stress,Insomnia,Pain,Lack of 
 Appetite,Nausea,Anxious,Dry Eyes,Paranoid,Headache,Dizzy,Dry Mouth,Focused,`;
 
-strains = strains.replace("\n"," ");
-effects = effects.replace("\n"," ");
+strains = strains.replace(/\n/g," ");
+strains = strains.replace(/ {2,}/g," ");
+effects = effects.replace(/\n/g," ");
+effects = effects.replace(/ {2,}/g," ");
+//replace all newlines with spaces then remove all excess spaces. Should now
+//match database.
 
 const autocomplete = strains + effects;
 
@@ -620,7 +624,6 @@ io.on("connection", function(socket)
         request({url:url, qs:request_parameters}, function(err,reponse,body)
         {
           console.log(reponse.statusCode);
-          console.log(JSON.parse(body).recommendations.results);
           io.emit("result",JSON.stringify(JSON.parse(body).recommendations.results));
           //send result to client side in non JSON format.
         });
