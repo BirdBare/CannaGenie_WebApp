@@ -7,11 +7,13 @@
 <link href="jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
 
 <script>
+var socketId = "";
 //Functions
   function SendSocket(id,data)
   {
     var socket = io();
-    socket.emit(id, data)
+    var obj = { ID:socketId, Data:data };
+    socket.emit(id, obj)
   }
 
   function Recommend()
@@ -26,9 +28,12 @@
 //Socket Functions
   socket = io();
 
+
   socket.on("result", function(data)
   {
-    data =  JSON.parse(data);
+    if(data.ID == socketId)
+    {
+    data =  JSON.parse(data.Data);
     console.log(data[0]);
     //log data for funsies
 
@@ -46,13 +51,14 @@
     }
     //for each item in the list. Should be 15 max. Pull the needed info and put
     //into a list item. append list item to unordered list.
-
+    }
   });
 
   //poor implementation of tags for now. TODO: find a way to access autocomplete
   //child to change source.
   socket.on("autocomplete", function(data) 
   {
+    socketId = socket.id;
     var source = "";
     source = data.split(",");
 

@@ -552,7 +552,7 @@ var http = require("http").Server(app);
 var io = require("socket.io")(http);
 var request = require("request");
 
-http.listen(8080);
+http.listen(8079);
 
 //create website
 app.get ('/', function(request, response) 
@@ -571,6 +571,10 @@ io.on("connection", function(socket)
 
   socket.on("recommend", function(data)
   {
+    var socketId = data.ID;
+    data = data.Data;
+    //extract data from data ID object
+
     if(data.length > 0)
     {
       data = data.split(",");
@@ -613,7 +617,7 @@ io.on("connection", function(socket)
       if(strainTags.length > 0 || effectTags.length > 0)
       {
         console.log("rec");
-        const url = "http://cannagenie.ngrok.io/api/recommend"
+        const url = "http://api.cannagenie.ngrok.io/api/recommend"
         const request_parameters = 
         {  
         "liked_strains": strainTags,
@@ -623,9 +627,17 @@ io.on("connection", function(socket)
 
         request({url:url, qs:request_parameters}, function(err,reponse,body)
         {
-          console.log(reponse.statusCode);
-          io.emit("result",JSON.stringify(JSON.parse(body).recommendations.results));
-          //send result to client side in non JSON format.
+	  if(reponse.statusCode == "404")
+	  {
+	  }
+	  else
+	  {
+      console.log(reponse.statusCode);
+      var result = JSON.stringify(JSON.parse(body).recommendations.results);
+      var obj = {ID:socketId, Data:result};
+      io.emit("result", obj);
+            //send result to client side in non JSON format.
+	  }
         });
       }
     }
@@ -637,7 +649,7 @@ io.on("connection", function(socket)
   {
     console.log(data);
 
-    const url = "http://cannagenie.ngrok.io/api/search"
+    const url = "http://api.cannagenie.ngrok.io/api/search"
     const request_parameters = 
     { 
     "text": data,
@@ -653,6 +665,7 @@ io.on("connection", function(socket)
     });
  
   });
+
 
 
 });
