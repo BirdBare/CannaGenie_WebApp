@@ -1,0 +1,119 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="jquery.caret.js"></script>
+<script src="jquery.tag-editor.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link href="jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
+
+<script>
+//Functions
+  function SendSocket(id,data)
+  {
+    var socket = io();
+    socket.emit(id, data)
+  }
+
+  function Recommend()
+  {
+    var cSearchText = document.getElementById("cSearch").value;
+    console.log(cSearchText);
+    SendSocket("recommend", cSearchText);
+
+  }
+//End Functions
+
+//Socket Functions
+  socket = io();
+
+  socket.on("result", function(data)
+  {
+    data =  JSON.parse(data);
+    console.log(data[0]);
+    //log data for funsies
+
+    var ul =document.getElementById("results");
+    ul.innerHTML = "";
+    //get unordered list and clear of list items.
+
+    for(var key in data)
+    {
+      var li = document.createElement("li");
+      li.innerText = 
+        data[key].name + ": " + (100*data[key].similarity).toFixed(0) 
+        + "% Match" + " Species: " + data[key].details.species;
+      ul.append(li);
+    }
+    //for each item in the list. Should be 15 max. Pull the needed info and put
+    //into a list item. append list item to unordered list.
+
+  });
+
+  //poor implementation of tags for now. TODO: find a way to access autocomplete
+  //child to change source.
+  socket.on("autocomplete", function(data) 
+  {
+    var source = "";
+    source = data.split(",");
+
+    $('#cSearch').tagEditor({
+      initialTags: [],
+      delimiter: ',\t', 
+      placeholder: 'Enter CannaGenie Tags...',
+      forceLowercase: true,
+      autocomplete: {
+        delay: 0,
+        minLength: 3,
+        source: source 
+      },
+    });
+  });
+//End SOcket Functions
+</script>
+
+<style>
+
+li.result
+{
+  clear:left;
+}
+
+ul.result
+{
+  list-style-type: none;
+  max-width:500px;
+}
+
+</style>
+
+  <center>
+<div id="container" style="position:relative;"> 
+    <img src="logo.png" alt="CannaGenie Logo"><br>
+    <div id="cSearchBar" style="max-width:500px;">
+      <input type="text" name="cSearch" id="cSearch"> 
+    </div>
+    <div id="cSubmit" style="position:relative; top:5px;" >
+      <button id="cSubmitButton" type="button" onclick="Recommend()"> I'm
+      feeling lucky </button>
+    </div>
+</div>
+
+<br><br>
+<br><br>
+
+
+
+<template>
+<li class="result">
+  <div style="float:left;">
+    <h2 id="name" style="float:left; line-height:0px;"> Strain name (linked) - Percent match </h2><br>
+    <img id="image" style="float:left;" src = logo.png width='200' height="100" align=top>
+    <span style="float:left;" id="description">Description</span>
+  </div>
+</li>
+</template>
+
+<ul id="results" class="result">
+</ul>
+
+</center>
