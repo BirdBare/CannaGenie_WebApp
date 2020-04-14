@@ -56,7 +56,7 @@
   <div style="margin-left: 125px;">
 		<div class="container1"> 
 			
-      <img src="logo.png" width="130" height="130" alt="picture of Bubble gum" class="float-img">
+      <img id="strainPicture" src="logo.png" width="130" height="130" alt="picture of Bubble gum" class="float-img">
       
       <div id="strainTitle" style="font-size: 20px; 
                                    text-align:left;
@@ -164,12 +164,19 @@
       var temp = document.getElementsByTagName("template")[0];     
       var title = temp.content.querySelector("strainTitle");
 
-      console.log(data[0].details);
+      console.log(data[12].details);
 
 
       for(var key in data)
       {
         var clone = temp.content.cloneNode(true);
+  
+        var imageName = data[key].details.image;
+        if(imageName.length != 0)
+        {
+          clone.querySelector("#strainPicture").src = 
+            "bud_images/" + imageName;; 
+        }
 
         clone.querySelector("#strainTitle").textContent = 
           data[key].name + " - Match: " + (100*data[key].similarity).toFixed(0)
