@@ -4,6 +4,8 @@ var http = require("http").Server(app);
 var io = require("socket.io")(http);
 var request = require("request");
 
+var baseURL = "http://localhost:8080/";
+
 http.listen(8079);
 
 //create website
@@ -31,7 +33,7 @@ io.on("connection", function(socket)
     if(data.length > 0)
     {
       /* GET ALL STRAINS AND EFFECTS FROM API */
-      const url = "http://api.cannagenie.ngrok.io/api/search"
+      const url = baseURL + "api/search";
       const request_parameters = 
       {  
         "category": "strain",
@@ -97,11 +99,11 @@ io.on("connection", function(socket)
 
               if(strainTags.length > 0 || effectTags.length > 0)
               {
-                const url = "http://api.cannagenie.ngrok.io/api/recommend"
+                const url = baseURL + "api/recommend";
                 const request_parameters = 
                 {  
                   "liked_strains": strainTags,
-                  "liked_effects": effectTags,
+                  "desired_effects": effectTags,
                   "return_details": true,
                 };
 
@@ -134,7 +136,7 @@ io.on("connection", function(socket)
   socket.on("search", function(data, fn)
   {
 
-    const url = "http://api.cannagenie.ngrok.io/api/search"
+    const url = baseURL + "api/search";
     const request_parameters = 
     { 
     "text": data,

@@ -6,18 +6,76 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link href="jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
 
-<style>
-  li.result
-  {
-    clear:left;
-  }
+       	<style>
+       		.float-img{
+       			  float:left;
+       			  margin-right: 10px;
+       			  border: solid black 1px;
+       		}
+       		
+       		.container1{
+       			position: relative;
+       			overflow: hidden;
+            margin-top:40px;
+            width:750px;
+            height:135px;
+       		}
 
-  ul.result
-  {
-    list-style-type: none;
-    max-width:500px;
-  }
-</style>
+       		.box1{
+       			position: relative;
+       			overflow: hidden;
+       		}
+
+
+       		.box1_1{  
+       			position: relative;
+       			float: left;
+       			width: 20px;
+       			height: 20px;
+       			margin:1px 0px 5px 1px ;
+       		}
+
+       		.box2{  
+				position: relative;
+       			overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            text-align:left;
+       		}
+
+       	</style>
+
+
+<template>
+  <div style="margin-left: 125px;">
+		<div class="container1"> 
+			
+      <img src="logo.png" width="130" height="130" alt="picture of Bubble gum" class="float-img">
+      
+      <div id="strainTitle" style="font-size: 20px; 
+                                   text-align:left;
+                                   margin-bottom: 0px;
+                                   font-family: arial">
+      </div>
+      
+      <div class="box1">
+        
+        <div class="box1_1"> 
+				</div>
+      </div>
+
+			<div id="strainDescription" class="box2">
+      </div>
+      
+      <div style="clear:both">
+      </div>
+    </div>
+  </div>
+</template>
+
+
+
 
 <center>
 <div id="container" style="position:relative;"> 
@@ -30,13 +88,11 @@
       feeling lucky </button>
     </div>
 </div>
-
-<br><br>
-<br><br>
-
-<ul id="results" class="result">
-</ul>
 </center>
+
+<ul id="results" style="list-style-type:none;">
+</ul>
+
 
 
 
@@ -48,7 +104,7 @@
   var searchStart = url.indexOf("search=",0);
   var searchEnd = url.indexOf("&",searchStart);
   var searchString = url.substring(searchStart,searchEnd).replace("search=","");
-  searchString = searchString.replace("%20"," ").replace("%27","'");
+  searchString = searchString.replace(/%20/g," ").replace(/%27/g,"'");
   //parse website parameters
 
 /*
@@ -95,17 +151,28 @@
     {
       data =  data.Data;
 
+
       var ul =document.getElementById("results");
       ul.innerHTML = "";
       //get unordered list and clear of list items.
 
+      var temp = document.getElementsByTagName("template")[0];     
+      var title = temp.content.querySelector("strainTitle");
+
+      console.log(data[0].details);
+
       for(var key in data)
       {
-        var li = document.createElement("li");
-        li.innerText = 
-          data[key].name + ": " + (100*data[key].similarity).toFixed(0) 
-          + "% Match" + " -- Species: " + data[key].details.species;
-        ul.append(li);
+        var clone = temp.content.cloneNode(true);
+
+        clone.querySelector("#strainTitle").textContent = 
+          data[key].name + " - Match: " + (100*data[key].similarity).toFixed(0)
+          + "% - Rating: "; 
+
+        clone.querySelector("#strainDescription").textContent =
+        data[key].details.description;
+
+        ul.append(clone);
       }
       //for each item in the list. Should be 15 max. Pull the needed info and put
       //into a list item. append list item to unordered list.
