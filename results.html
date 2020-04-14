@@ -30,9 +30,11 @@
        		.box1_1{  
        			position: relative;
        			float: left;
-       			width: 20px;
-       			height: 20px;
-       			margin:1px 0px 5px 1px ;
+            font-size:15px;
+       			width: 40px;
+       			height: 30px;
+       			margin:1px 0px 5px 0px ;
+            text-align:center;
        		}
 
        		.box2{  
@@ -43,12 +45,6 @@
             -webkit-box-orient: vertical;
             text-align:left;
        		}
-
-          .button{
-            position: relative;
-            float: right;
-          }
-
        	</style>
 
 
@@ -64,10 +60,8 @@
                                    font-family: arial">
       </div>
       
-      <div class="box1">
+      <div class="box1" id="strainNoids">
         
-        <div class="box1_1"> 
-				</div>
       </div>
 
 			<div id="strainDescription" class="box2">
@@ -78,11 +72,13 @@
     </div>
   </div>
 </template>
+<template>
+  <div class="box1_1" id="noid"> 
+	</div>
+</template>
 
 
 
-
-<center>
 <div id="container" style="position:relative;"> 
     <!img src="logo.png" alt="CannaGenie Logo"><br>
     <div id="cSearchBar" style="max-width:500px;">
@@ -93,7 +89,6 @@
       feeling lucky </button>
     </div>
 </div>
-</center>
 
 <ul id="results" style="list-style-type:none;">
 </ul>
@@ -161,31 +156,58 @@
       ul.innerHTML = "";
       //get unordered list and clear of list items.
 
-      var temp = document.getElementsByTagName("template")[0];     
-      var title = temp.content.querySelector("strainTitle");
+      var result = document.getElementsByTagName("template")[0];     
+      var noid = document.getElementsByTagName("template")[1];     
 
-      console.log(data[12].details);
+      console.log(data[5].details);
 
-
+      
       for(var key in data)
       {
-        var clone = temp.content.cloneNode(true);
-  
+
+        var liClone = result.content.cloneNode(true);
+
+        //image
         var imageName = data[key].details.image;
         if(imageName.length != 0)
         {
-          clone.querySelector("#strainPicture").src = 
+          liClone.querySelector("#strainPicture").src = 
             "bud_images/" + imageName;; 
         }
 
-        clone.querySelector("#strainTitle").textContent = 
+        //cheminoids
+        var terpenes = data[key].details.terpenes;
+
+        if(terpenes != "No Data")
+        {
+          terpeneArray = [
+            ["delta-9 THC","THC"],
+            ["CBD","CBD"]
+          ];
+          terpeneArray.forEach(function(item) 
+          {
+
+          var noidClone = noid.content.cloneNode(true);
+            noidClone.querySelector("#noid").innerText = 
+              item[1] + "\n" + parseInt(terpenes[item[0]]) + "%";
+            liClone.querySelector("#strainNoids").appendChild(noidClone);
+          });
+        }
+        else
+        {
+          var noidClone = noid.content.cloneNode(true);
+          liClone.querySelector("#strainNoids").appendChild(noidClone);
+        }
+        //Title
+        liClone.querySelector("#strainTitle").textContent = 
           data[key].name + " - Match: " + (100*data[key].similarity).toFixed(0)
           + "% - Rating: "; 
-
-        clone.querySelector("#strainDescription").textContent =
+        
+        //Description
+        liClone.querySelector("#strainDescription").textContent =
         data[key].details.description;
 
-        ul.append(clone);
+        ul.append(liClone);
       }
       //for each item in the list. Should be 15 max. Pull the needed info and put
       //into a list item. append list item to unordered list.
