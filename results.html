@@ -6,9 +6,22 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link href="jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
 
+<style>
+  li.result
+  {
+    clear:left;
+  }
+
+  ul.result
+  {
+    list-style-type: none;
+    max-width:500px;
+  }
+</style>
+
 <center>
 <div id="container" style="position:relative;"> 
-    <img src="logo.png" alt="CannaGenie Logo"><br>
+    <!img src="logo.png" alt="CannaGenie Logo"><br>
     <div id="cSearchBar" style="max-width:500px;">
       <input type="text" name="cSearch" id="cSearch"> 
     </div>
@@ -18,10 +31,25 @@
     </div>
 </div>
 
+<br><br>
+<br><br>
+
+<ul id="results" class="result">
+</ul>
+</center>
+
+
 
 <script>
   var socket = io();
-  var socketId = "";
+  var socketId = null;
+
+  url = window.location.href;
+  var searchStart = url.indexOf("search=",0);
+  var searchEnd = url.indexOf("&",searchStart);
+  var searchString = url.substring(searchStart,searchEnd).replace("search=","");
+  searchString = searchString.replace("%20"," ").replace("%27","'");
+  //parse website parameters
 
 /*
 --------------------------------------------
@@ -54,15 +82,44 @@
   socket.on("connect", function(data)
   {
     socketId = socket.id;
+
+        console.log(searchString);
+
+    SendSocket("recommend", searchString);
   });
   //get unique ID when connected.
+
+  socket.on("result", function(data)
+  {
+    if(data.ID == socketId)
+    {
+      data =  data.Data;
+
+      var ul =document.getElementById("results");
+      ul.innerHTML = "";
+      //get unordered list and clear of list items.
+
+      for(var key in data)
+      {
+        var li = document.createElement("li");
+        li.innerText = 
+          data[key].name + ": " + (100*data[key].similarity).toFixed(0) 
+          + "% Match" + " -- Species: " + data[key].details.species;
+        ul.append(li);
+      }
+      //for each item in the list. Should be 15 max. Pull the needed info and put
+      //into a list item. append list item to unordered list.
+    }
+  });
+
 /*
 --------------------------------------------
             Tag search bar instance
 --------------------------------------------
 */
-  $('#cSearch').tagEditor({
-      initialTags: [],
+ 
+    $('#cSearch').tagEditor({
+      initialTags: searchString.split(","),
       delimiter: ',\t', 
       placeholder: 'Enter CannaGenie Tags...',
       forceLowercase: true,
@@ -78,12 +135,23 @@
         }
       }
   });
+  
+  $("#cSearch").keyup(function(event)
+  {
+    console.log("down");
+    if(event.keycode == 13)
+    {
+      Recommend();
+    }
+  });
 
-  $(document).keypress(function(event)
+  $(document).keydown(function(event)
   {
     if(event.which == 13)
     {
       Recommend();
     }
   });
+
+
 </script>
