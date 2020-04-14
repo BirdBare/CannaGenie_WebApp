@@ -190,7 +190,7 @@
 
           var noidClone = noid.content.cloneNode(true);
             noidClone.querySelector("#noid").innerText = 
-              item[1] + "\n" + parseInt(terpenes[item[0]]) + "%";
+              item[1] + "\n" + parseFloat(terpenes[item[0]]).toFixed(1) + "%";
             liClone.querySelector("#strainNoids").appendChild(noidClone);
           });
         }
