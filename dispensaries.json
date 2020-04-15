@@ -1,0 +1,99 @@
+
+{
+	
+	"HCL Collinsville": 
+	{
+		"location": "Collinsville, IL",
+		"strains": 
+		[
+			"ACDC",
+			"Blueberry Headband",
+			"OGKZ",
+			"Exodus Cheese",
+			"Green Line OG",
+			"Hurricane",
+			"Orange Cream",
+			"Sour Joker"
+		]
+	},
+		
+	"HCL Springfield":
+	{
+		"location": "Springfield, IL",
+		"strains":
+		[
+			"ACDC",
+			"Purple Animal Cookies OG",
+			"Blueberry Headband",
+			"Purple Buddha",
+			"Exodus Cheese",
+			"Grand Doggy Purps",
+			"OGKZ",
+			"Watermellon",
+			"Jack Herer",
+			"Pheno 51",
+			"Super Glu",
+			"Blue Zkittlez",
+			"Cherry Limeade",
+			"3 Kings",
+			"Clementine",
+			"Death Star",
+			"Durban Berry",
+			"Green Line OG",
+			"Hell's OG",
+			"Jedi Kush",
+			"Kosher Kush",
+			"Jet Fuel",
+			"Lemon Drop",
+			"Mandarin Cookies",
+			"Sour Diesel",
+			"Watermellon"
+		]
+	},
+
+	"The Green Solution, Sauget":
+	{
+		"location": "Sauget, IL",
+		"strains":
+		[
+			"Blackberry Kush",
+			"Harle-Tsu",
+			"Shangri-La",
+			"White Harmony",
+			"Popcorn Kush",
+			"Highwayman",
+			"MediHaze"
+		]
+	},
+	
+	"The Greenhouse, Litchfield":
+	{
+		"location": "Litchfield, IL",
+		"strains":
+		[
+			"Blueberry Headband",
+			"White Harmony",
+			"818 OG",
+			"ACDC",
+			"Alien Rock Candy",
+			"CBD Blue Shark",
+			"Cherry Wine",
+			"China Berry",
+			"Forbidden Fruit",
+			"Ghost Train Haze",
+			"Harle-Tsu",
+			"Harlequin",
+			"Ice Cream Cake",
+			"Chocolate Lava",
+			"Lemon Tree",
+			"Mag Landrace",
+			"Mandarin Cookies",
+			"MediHaze",
+			"NYC Diesel",
+			"Pink Lemonade",
+			"Wedding Cake"
+		]
+	}
+}
+
+
