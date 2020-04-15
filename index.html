@@ -13,7 +13,7 @@
       <input type="text" name="cSearch" id="cSearch"> 
     </div>
     <div id="cSubmit" style="position:relative; top:5px;" >
-      <button id="cSubmitButton" type="button" onclick="Recommend()"> I'm
+      <button id="cSubmitButton" type="button" onclick="getValues()"> I'm
       feeling lucky </button>
     </div>
 </div>
@@ -34,7 +34,7 @@
     socket.emit(id, obj)
   }
 
-  function Recommend()
+  function getValues()
   {
     var cSearchText = document.getElementById("cSearch").value;
     document.getElementById("cSearch").value = "";

@@ -61,7 +61,6 @@
       <img id="strainPicture" src="logo.png" width="130" height="130" alt="picture of Bubble gum" class="float-img">
       </a>
 
-      
       <div style="font-size: 18px; 
                     text-align:left;
                     margin-bottom: 0px;
@@ -96,11 +95,11 @@
 
 <template>
   <li>
-    <div>Illinous dispensary</div>
-    <ul id="dispensaryResults" style="list-style-type:none; margin-left:0px;"></ul>
+    <a href='#' style="font-family: Lucida Grande;" onClick="getValues(this)">Illinois dispensary</a>
+    <ul id="dispensaryResults" style="list-style-type:none;
+    margin-left:0px;"></ul>
   </li>
 </template>
-
 
 
 
@@ -114,7 +113,8 @@ min-height:100%;">
     margin-left:20px;">
       <input type="text" name="cSearch" id="cSearch"> 
       <center>
-      <button id="cSubmitButton" type="button" style="margin-top:5px;" onclick="Recommend()"> I'm
+      <button id="cSubmitButton" type="button"
+      style="margin-top:5px;"onclick="getValues(null)"> I'm
       feeling lucky </button>
       </center>
     </div>
@@ -150,7 +150,18 @@ min-height:100%;">
     socket.emit(id, obj)
   }
 
-  function Recommend()
+  function getValues(link)
+  {
+    var text = searchDispensary;
+    if(link != null)
+    {
+      text = link.innerText;
+    }
+
+    Recommend(text);
+  }
+
+  function Recommend(dispensary)
   {
     var cSearchText = document.getElementById("cSearch").value;
     document.getElementById("cSearch").value = "";
@@ -160,7 +171,7 @@ min-height:100%;">
     {
       socket.close();
       window.location = "results.html?" + "search=" + cSearchText +
-      "&dispensary=";
+      "&dispensary=" + dispensary;
     }
   }
 /*
@@ -237,11 +248,7 @@ min-height:100%;">
             liClone.querySelector("#strainNoids").appendChild(noidClone);
           });
         }
-        else
-        {
-          //var noidClone = noid.content.cloneNode(true);
-          //liClone.querySelector("#strainNoids").appendChild(noidClone);
-        }
+        
         //Title
         liClone.querySelector("#strainTitle").textContent = data[key].name; 
         liClone.querySelector("#strainMatch").textContent = 
