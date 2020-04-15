@@ -20,13 +20,13 @@
             width:750px;
             height:135px;
             font-family: Lucida Grande;
-            background-color: blue;
        		}
 
        		.box1{
        			position: relative;
        			overflow: hidden;
-            background-color: orange;
+            margin-top: 2.5px;
+            margin-bottom: 2.5px;
        		}
 
 
@@ -35,23 +35,22 @@
        			float: left;
             font-size:15px;
        			width: 40px;
-       			height: 30px;
-       			margin:1px 0px 5px 0px ;
+       			height: 35px;
+       			margin: 5px 5px 5px 0px;
             text-align:left;
             font-family: Lucida Grande;
-           background-color: yellow;
        		}
 
        		.box2{  
 				position: relative;
        			overflow: hidden;
             display: -webkit-box;
-            -webkit-line-clamp: 4;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             text-align:left;
             font-family: Lucida Grande;
-            background-color: green;
-            line-height: 1.4;
+            line-height: 1.5;
+            word-spacing: 1.5;
        		}
        	</style>
 
@@ -61,19 +60,17 @@
 		<div class="container1"> 
 			<a style="text-decoration:none" href="strain.html"> 
       <img id="strainPicture" src="logo.png" width="130" height="130" alt="picture of Bubble gum" class="float-img">
-      
       </a>
 
       
-        <div style="font-size: 18px; 
+      <div style="font-size: 18px; 
                     text-align:left;
                     margin-bottom: 0px;
                     font-family: Lucida Grande;
                     font-weight: bold;">
 
-          <a style="text-decoration:none" id="strainTitle" href="strain.html">
-          </a>
-          <div id="strainMatch"></div>
+          <a style="text-decoration:none" id="strainTitle" href="strain.html"></a>
+          <span id="strainMatch"></span>
         </div>
       
       <div class="box1" id="strainNoids">
@@ -94,34 +91,47 @@
 </template>
 
 
-
-<div id="container" style="position:relative;">
-    <!img src="logo.png" alt="CannaGenie Logo"><br>
-    <div id="cSearchBar" style="max-width:500px;">
+<div id="container" style="position:relative; margin-top:10px; margin-left:10px;
+min-height:100%;">
+    <img width=110 height=110 src="logo.png" style="float:left;" alt="CannaGenie Logo"><br>
+    <div id="cSearchBar" style="float:left; width:500px; margin-top:20px;
+    margin-left:20px;">
       <input type="text" name="cSearch" id="cSearch"> 
-    </div>
-    <div id="cSubmit" style="position:relative; top:5px;" >
-      <button id="cSubmitButton" type="button" class="button" onclick="Recommend()"> I'm
+      <center>
+      <button id="cSubmitButton" type="button" style="margin-top:5px;" onclick="Recommend()"> I'm
       feeling lucky </button>
+      </center>
     </div>
-</div>
+    <div style="clear:both"></div>
 
+<br>
 <ul id="results" style="list-style-type:none;">
 </ul>
 
+<center>
+<div style="position:absolute; bottom:0;"> Howdy </div>
+</center>
 
-
+</div>
 
 <script>
   var socket = io();
   var socketId = null;
 
+  parameterDict = {};
+
   url = window.location.href;
-  var searchStart = url.indexOf("search=",0);
-  var searchEnd = url.indexOf("&",searchStart);
-  var searchString = url.substring(searchStart,searchEnd).replace("search=","");
-  searchString = searchString.replace(/%20/g," ").replace(/%27/g,"'");
-  //parse website parameters
+  
+  var start = 0;
+  var end = 0;
+
+    var searchStart = url.indexOf("=",47);
+    var searchEnd = url.indexOf("&",searchStart);
+    var searchString = url.substring(searchStart,searchEnd).replace("=","");
+    searchString = searchString.replace(/%20/g," ").replace(/%27/g,"'");
+    //parse website parameters
+
+  console.log(searchStart);
 
 /*
 --------------------------------------------
@@ -198,7 +208,8 @@
         {
           terpeneArray = [
             ["delta-9 THC","THC"],
-            ["CBD","CBD"]
+            ["CBD","CBD"],
+            ["CBN","CBN"]
           ];
           terpeneArray.forEach(function(item) 
           {
@@ -211,13 +222,13 @@
         }
         else
         {
-          var noidClone = noid.content.cloneNode(true);
-          liClone.querySelector("#strainNoids").appendChild(noidClone);
+          //var noidClone = noid.content.cloneNode(true);
+          //liClone.querySelector("#strainNoids").appendChild(noidClone);
         }
         //Title
-        liClone.querySelector("#strainTitle").textContent = 
-          data[key].name + " - Match: " + (100*data[key].similarity).toFixed(0)
-          + "% - Rating: "; 
+        liClone.querySelector("#strainTitle").textContent = data[key].name; 
+        liClone.querySelector("#strainMatch").textContent = 
+          " - Match: " + (100*data[key].similarity).toFixed(0) + "% - Rating: "; 
         
         //Description
         liClone.querySelector("#strainDescription").textContent =
