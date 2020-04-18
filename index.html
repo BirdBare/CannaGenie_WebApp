@@ -5,51 +5,209 @@
 <script src="jquery.tag-editor.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link href="jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
+<link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
 
-<center>
-<div id="container" style="position:relative;"> 
-    <img src="logo.png" alt="CannaGenie Logo"><br>
-    <div id="cSearchBar" style="max-width:500px;">
-      <input type="text" name="cSearch" id="cSearch"> 
-    </div>
-    <div id="cSubmit" style="position:relative; top:5px;" >
-      <button id="cSubmitButton" type="button" onclick="getValues()"> I'm
-      feeling lucky </button>
-    </div>
-</div>
-</center>
 
-<style>
-.websiteArea
+
+<script>
+$("#submit").Click(function()
 {
-  min-Width:600px;
+console.log("hello");
+});
+
+</script>
+<style>
+
+body
+{
+position:relative;
+margin: 0;
+z-index:-1;
+  min-Width:800px;
 }
+body::after
+{
+background: url("images/background.jpeg");
+background-repeat: no-repeat;
+background-size:cover;
+content:'';
+position:absolute;
+opacity:0.3;
+top: 0;
+bottom: 0;
+right: 0;
+left: 0;
+z-index:-2;
+}
+
+#websiteArea
+{
+  position:relative;
+  min-height:100%;
+}
+
+#header
+{
+position:relative;
+height:150px;
+}
+#icon
+{
+float:right;
+top:20px;
+left:885px;
+cursor:pointer;
+margin-top: 20px;
+margin-right: 20px;
+}
+
+#name
+{
+font-size:75px;
+font-family:'Lobster';
+color:#336600;
+}
+#slogan
+{
+font-size:16px;
+color:#336600;
+}
+
+#searchArea
+{
+width:350px;
+position:relative;
+}
+#input+.tag-editor
+{
+position:absolute;
+color:black;
+background-color:#6bab51;
+width:350px;
+z-index:0;
+border:2px solid black;
+}
+.ui-autocomplete 
+{ 
+background-color:#6bab51;
+color:black;
+position: absolute; 
+top: 0; 
+left: 0; 
+cursor: default; 
+font-size: 14px; 
+max-height: 300px; 
+overflow: auto;
+}
+#help
+{
+position:absolute;
+color:black;
+left:332px;
+height:22px;
+width:23px;
+z-index:1;
+font-size:25px;
+cursor:pointer;
+}
+
+#submit
+{
+position:absolute;
+left:360px;
+height:30;
+width:60;
+z-index:1;
+cursor:pointer;
+}
+
+#footer
+{
+  position:absolute;
+  width:100%;
+  bottom:0;
+}
+#linkArea
+{
+  position:relative;
+}
+.rightLink
+{
+  float:right;
+  margin-left:120px;
+  margin-right:15px;
+  margin-bottom:10px;
+  cursor:pointer;
+  text-decoration:underline;
+  color:black;
+}
+.leftLink
+{
+  float:left;
+  margin-right:120px;
+  margin-left:15px;
+  margin-bottom:10px;
+  cursor:pointer;
+  text-decoration:underline;
+  color:black;
+}
+#annoucement
+{
+position:relative;
+border-style:solid;
+}
+
 </style>
 
-<div id="websiteArea"
-class="websiteArea">
-
-  <div id="logoSearchArea">
+<body>
+<div id="websiteArea">
     <center>
+  <div id="header">
+    <div id="user">
+    <img id="icon" src="images/logo/user.png">
+    </div>
+  </div>
+
+  <div id="body">
     <div id="logoArea">
       <div id="name">
-        <img src="logo.png" alt="CannaGenie Logo"><br>
+        Cannagenie
       </div>
       <div id="slogan">
         Your Personalized Strain Finder
       </div>
+      <br>
+      <br>
     </div>
-    <div id="Search Area">
-
-      <input type="text" name="cSearch" id="cSearch"> 
-      <img height="100" width="100" src="searchLogo.png">
-      
+    <div id="searchArea">
+      <input type="text" name="input" id="input"> 
+      <div id="help">?</div>
+      <img onClick="getValues();"id="submit" src="images/logo/submit.png">
     </div>
-    </center>
   </div>
 
+  <div id="footer">
+    <div id="linkArea">
+      <div id="socialMedia" class="leftLink">
+        Social Media
+      </div>
+      <div id="mission" class="leftLink">
+        Mission
+      </div>
+      <div id="technology" class="rightLink">
+        Technology
+      </div>
+      <div id="aboutUs"class="rightLink">
+        About us
+      <div style="clear:both;"></div>
+      </div>
+    <div>
+      <div id="announcement">
+      </div>
+  </div>
+    </center>
 </div>
-
+</body>
 <script>
   var socket = io();
   var socketId = "";
@@ -67,8 +225,9 @@ class="websiteArea">
 
   function getValues()
   {
-    var cSearchText = document.getElementById("cSearch").value;
-    document.getElementById("cSearch").value = "";
+  console.log("hello");
+    var cSearchText = document.getElementById("input").value;
+    document.getElementById("input").value = "";
     //get then reset .value incase user hit back button on result page
 
     if(cSearchText.length > 0)
@@ -92,7 +251,7 @@ class="websiteArea">
             Tag search bar instance
 --------------------------------------------
 */
-  $('#cSearch').tagEditor({
+  $('#input').tagEditor({
       initialTags: [],
       delimiter: ',\t', 
       placeholder: 'Enter CannaGenie Tags...',

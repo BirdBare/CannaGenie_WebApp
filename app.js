@@ -4,7 +4,8 @@ var http = require("http").Server(app);
 var io = require("socket.io")(http);
 var request = require("request");
 
-var baseURL = "http://localhost:8080/";
+//var baseURL = "http://localhost:8080/";
+var baseURL = "http://api.cannagenie.ngrok.io/";
 
 http.listen(8079);
 
