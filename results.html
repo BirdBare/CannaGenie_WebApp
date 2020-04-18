@@ -57,7 +57,7 @@
 <template>
   <li>
 		<div class="container1"> 
-			<a style="text-decoration:none" href="strain.html"> 
+			<a style="text-decoration:none" > 
       <img id="strainPicture" src="logo.png" width="130" height="130" alt="picture of Bubble gum" class="float-img">
       </a>
 
@@ -67,7 +67,7 @@
                     font-family: Lucida Grande;
                     font-weight: bold;">
 
-          <a style="text-decoration:none" id="strainTitle" href="strain.html"></a>
+          <a style="text-decoration:none" id="strainTitle" ></a>
           <span id="strainMatch"></span>
         </div>
       
@@ -108,7 +108,8 @@
 
 <div id="container" style="position:relative; margin-top:10px; margin-left:10px;
 min-height:100%;">
-    <img width=110 height=110 src="logo.png" style="float:left;" alt="CannaGenie Logo"><br>
+    <a href="index.html"><img width=110 height=110 src="logo.png"
+    style="float:left;" alt="CannaGenie Logo"><br></a>
     <div id="cSearchBar" style="float:left; width:500px; margin-top:20px;
     margin-left:20px;">
       <input type="text" name="cSearch" id="cSearch"> 
@@ -125,7 +126,7 @@ min-height:100%;">
 </ul>
 
 <center>
-<div style="position:absolute; bottom:0;"> Howdy </div>
+<div style="position:absolute; bottom:0;"> </div>
 </center>
 
 </div>
@@ -200,16 +201,6 @@ min-height:100%;">
       ul.innerHTML = "";
       //get unordered list and clear of list items.
 
-      var dispensary = document.getElementsByTagName("template")[2];     
-
-      if(searchDispensary.length == 0)
-      {
-        var dispensaryClone = dispensary.content.cloneNode(true);   
-        var dul = dispensaryClone.querySelector("#dispensaryResults");
-        ul.append(dispensaryClone);
-        ul = dul;
-      }
-
       var result = document.getElementsByTagName("template")[0];     
       var noid = document.getElementsByTagName("template")[1];     
 
@@ -259,8 +250,6 @@ min-height:100%;">
         data[key].details.description;
 
         ul.append(liClone);
-        if(searchDispensary.length == 0)
-          break;
       }
       //for each item in the list. Should be 15 max. Pull the needed info and put
       //into a list item. append list item to unordered list.
