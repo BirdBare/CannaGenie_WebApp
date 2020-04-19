@@ -5,7 +5,258 @@
 <script src="jquery.tag-editor.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link href="jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
+<link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
 
+
+
+
+
+<style>
+.result
+{
+font-size: 18px; 
+text-align:left;
+margin-bottom: 0px;
+font-family: Lucida Grande;
+font-weight: bold;
+}
+.horizontalScrollArea
+{
+overflow-x: scroll;
+overflow-y: hidden;
+white-space: nowrap;
+border-style: solid;
+}
+.horizontalScrollItem
+{
+  display:inline-block;
+  overflow:hidden;
+border-style: solid;
+}
+.horizontalScrollItemSpacer
+{
+  width:10px;
+  display:inline-block;
+}
+
+
+
+body
+{
+position:relative;
+margin: 0;
+z-index:-1;
+  min-Width:800px;
+}
+
+#header
+{
+position:relative;
+height:120px;
+background-color:#f7ffe3;
+}
+#logo
+{
+position:absolute;
+width:120px;
+height:80px;
+margin-left:10px;
+margin-top:10px;
+cursor:pointer;
+}
+#name
+{
+position:absolute;
+font-size:25px;
+font-family:'Lobster';
+color:#336600;
+margin-top:80px;
+margin-left:10px;
+cursor:pointer;
+}
+#input+.tag-editor
+{
+position:absolute;
+width:550px;
+z-index:0; 
+border:2px solid black;
+left:150px;
+top:50;
+}
+#help
+{
+position:absolute;
+color:black;
+left:692px;
+height:22px;
+width:27px;
+z-index:1;
+font-size:25px;
+cursor:pointer;
+top:50px;
+}
+#submit
+{
+position:absolute;
+left:710px;
+height:30;
+width:60;
+z-index:1;
+cursor:pointer;
+top:50px;
+}
+#icon
+{
+float:right;
+cursor:pointer;
+margin-top: 40px;
+margin-right: 20px;
+}
+
+#searchArea
+{
+margin-left:125px;
+height:95px;
+width:600px;
+}
+#searchResult
+{
+  height:90px;
+  width:115px;
+}
+
+#results
+{
+  list-style-type:none; 
+  margin-left:20px;
+  padding:0px;
+}
+#resultArea
+{
+  width:1000px;
+}
+
+#strainArea
+{
+  width:620px;
+  height:100px;
+  float:left;
+}
+#strainIcon
+{
+  width:80px;
+  height:100px;
+  margin-left:13px;
+  margin-right:13px;
+  position: relative;
+  float:left;
+}
+
+#dispensaryArea
+{
+  margin-left:30px;;
+  width:300px;
+  height:100px;
+  float:left;
+}
+
+#ratingIcon
+{
+  width:20px;
+  height:20px;
+
+}
+
+
+</style>
+<body>
+
+
+<div id="header">
+  <img id="logo" src="logo.png" >
+  <div id="name">
+  Cannagenie
+  </div>
+  <input type="text" name="input" id="input"> 
+  <div id="help">?</div>
+  <img id="submit" src="images/logo/submit.png">
+  <img id="icon" src="images/logo/user.png">
+</div>
+
+<div id="searchArea" class="horizontalScrollArea">
+  <div id="searchResults">
+    <template>
+      <div id="searchResult" class="horizontalScrollItem link"></div>
+      <div class="horizontalScrollItemSpacer"></div>
+    </template>
+  </div>
+</div>
+
+<ul id="results">
+  <template>
+  <li id="resultArea">
+  
+  <div id="strainArea">
+    <img id="strainIcon" src="logo.png" alt="picture of Bubble gum" >
+    <span id="strainTitle" class="result">Super Lemon Haze - </span>
+    <span id="strainMatch" class="result">Match 40% - </span>
+    <span id="strainRating" class="result">Rating: </span>
+    <span id="strainRatingIcons"> 
+      <img id="ratingIcon" src="logo.png" >
+    </span>
+    <div id="resultTop3"> Top 3 </div>
+    <div id="resultDescription" class="">Description</div>
+  </div>
+
+  <div id="dispensaryArea">
+    <div id="dispensaryHeader">
+      Available At
+    </div>
+    <div class="horizontalScrollArea">
+      <div id="dispensaryResults">
+      <template>
+        <div id="dispensaryResult" class="horizontalScrollItem link">
+          <div id="dispensaryName"></div>
+          <div id="dispensaryDistance"></div>
+        </div>
+      </template>
+    </div>
+  </div>
+
+<div style="clear:both;"></div>
+
+  </li>
+  </template>
+</ul>
+
+<body>
+<script>
+$("#name").click(function() { window.location = "index.html"; });
+$("#logo").click(function() { window.location = "index.html"; });
+
+$("#help").click(function()
+{
+});
+
+$("#submit").click(function()
+{
+var search = document.getElementById("input").value;
+
+  if(search.length == 0)
+  {
+    //go to strain of the day
+  }
+  else
+  {
+    getValues();
+  }
+});
+$("#icon").click(function()
+{
+});
+
+
+</script>
        	<style>
        		.float-img{
               position: relative;
@@ -36,7 +287,7 @@
             font-size:15px;
        			width: 40px;
        			height: 35px;
-       			margin: 5px 5px 5px 0px;
+       			margin: 0px 0px 0px 0px;
             text-align:left;
             font-family: Lucida Grande;
        		}
@@ -106,30 +357,10 @@
 
 
 
-<div id="container" style="position:relative; margin-top:10px; margin-left:10px;
-min-height:100%;">
-    <a href="index.html"><img width=110 height=110 src="logo.png"
-    style="float:left;" alt="CannaGenie Logo"><br></a>
-    <div id="cSearchBar" style="float:left; width:500px; margin-top:20px;
-    margin-left:20px;">
-      <input type="text" name="cSearch" id="cSearch"> 
-      <center>
-      <button id="cSubmitButton" type="button"
-      style="margin-top:5px;"onclick="getValues(null)"> I'm
-      feeling lucky </button>
-      </center>
-    </div>
-    <div style="clear:both"></div>
-
 <br>
-<ul id="results" style="list-style-type:none; margin-left:125px;">
+<ul id="results" style="list-style-type:none; margin-left:0px;">
 </ul>
 
-<center>
-<div style="position:absolute; bottom:0;"> </div>
-</center>
-
-</div>
 
 <script>
   var socket = io();
@@ -164,8 +395,8 @@ min-height:100%;">
 
   function Recommend(dispensary)
   {
-    var cSearchText = document.getElementById("cSearch").value;
-    document.getElementById("cSearch").value = "";
+    var cSearchText = document.getElementById("input").value;
+    document.getElementById("input").value = "";
     //get then reset .value incase user hit back button on result page
 
     if(cSearchText.length > 0)
@@ -198,7 +429,7 @@ min-height:100%;">
 
 
       var ul = document.getElementById("results");
-      ul.innerHTML = "";
+  //    ul.innerHTML = "";
       //get unordered list and clear of list items.
 
       var result = document.getElementsByTagName("template")[0];     
@@ -262,7 +493,7 @@ min-height:100%;">
 --------------------------------------------
 */
  
-    $('#cSearch').tagEditor({
+    $('#input').tagEditor({
       initialTags: searchValue.split(","),
       delimiter: ',\t', 
       placeholder: 'Enter CannaGenie Tags...',
@@ -280,7 +511,7 @@ min-height:100%;">
       }
   });
   
-  $("#cSearch").keyup(function(event)
+  $("#input").keyup(function(event)
   {
     console.log("down");
     if(event.keycode == 13)
