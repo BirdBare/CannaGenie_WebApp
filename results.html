@@ -22,6 +22,7 @@ font-weight: bold;
 }
 .horizontalScrollArea
 {
+margin-top:20px;
 overflow-x: scroll;
 overflow-y: hidden;
 white-space: nowrap;
@@ -35,6 +36,11 @@ white-space: nowrap;
 {
   width:10px;
   display:inline-block;
+}
+.link
+{
+cursor:pointer;
+
 }
 
 
@@ -116,13 +122,13 @@ margin-right: 20px;
 #searchArea
 {
 margin-left:125px;
-height:95px;
+height:180px;
 width:600px;
 }
 #searchResult
 {
-  height:90px;
-  width:115px;
+  height:200px;
+  width:180px;
 }
 
 #results
@@ -180,6 +186,11 @@ width:600px;
 
 }
 
+#searchLogo
+{
+  height:150;
+  width:180;
+}
 
 </style>
 <body>
@@ -199,7 +210,12 @@ width:600px;
 <div id="searchArea" class="horizontalScrollArea">
   <div id="searchResults">
     <template>
-      <div id="searchResult" class="horizontalScrollItem link"></div>
+      <div id="searchResult" class="horizontalScrollItem link">
+        <center>
+          <img id="searchLogo" src="logo.png">
+          <div id="searchName"></div>
+        </center>
+      </div>
       <div class="horizontalScrollItemSpacer"></div>
     </template>
   </div>
@@ -267,17 +283,15 @@ var search = document.getElementById("input").value;
 $("#icon").click(function()
 {
 });
-</script>
+
+$(".link").click(function()
+{
+  console.log("hello");
+});
 
 
 
 
-<br>
-<ul id="results" style="list-style-type:none; margin-left:0px;">
-</ul>
-
-
-<script>
   var lat;
   var lon;
   navigator.geolocation.getCurrentPosition(function (position)
@@ -355,6 +369,37 @@ $("#icon").click(function()
   });
   //get unique ID when connected.
 
+  socket.on("SearchResult", function(data)
+  {
+    if(data.ID == socketId)
+    {
+      data =  data.Data;
+
+      var area = document.getElementById("searchResults");
+      var search = document.getElementsByTagName("template")[0];     
+      
+      for(var key in data)
+      {
+        var searchClone = search.content.cloneNode(1);
+
+        searchClone.querySelector("#searchResult").click(function()
+        {
+        
+        });
+        
+        var imageName = data[key].item_details.image;
+        searchClone.querySelector("#searchLogo").src = "logo.png";
+
+        searchClone.querySelector("#searchName").innerText = data[key].item_name;;
+
+        area.append(searchClone);
+      }
+    }
+
+    
+  });
+
+
   socket.on("RecommendationResult", function(data)
   {
     if(data.ID == socketId)
@@ -379,11 +424,7 @@ $("#icon").click(function()
 
         //image
         var imageName = data[key].details.image;
-        if(imageName.length != 0)
-        {
-          liClone.querySelector("#strainIcon").src = 
-            "bud_images/" + imageName; 
-        }
+        liClone.querySelector("#strainIcon").src = "bud_images/" + imageName; 
 
         //cheminoids
         var terpenes = data[key].details.terpenes;

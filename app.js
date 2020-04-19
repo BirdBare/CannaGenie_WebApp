@@ -30,12 +30,12 @@ io.on("connection", function(socket)
     var socketId = data.ID;
     data = data.Data;
     //extract data from data ID object
-      
+
+     console.log(data); 
       const url = baseURL + "api/multidisambiguate";
       const request_parameters = 
       {  
-        "category": "strain",
-        "results_per_page" : "200000",
+        "input": data,
       };
 
       request({url:url, qs:request_parameters}, function(err,reponse,body)
@@ -45,8 +45,10 @@ io.on("connection", function(socket)
 	      }
 	      else
 	      {
-          var apiStrain =
-            JSON.parse(body);
+          var searchData = JSON.parse(body).result;
+
+          var obj = {ID:socketId, Data:searchData};
+          io.emit("SearchResult", obj);
         }
       });
        
@@ -134,9 +136,9 @@ io.on("connection", function(socket)
                   "desired_effects": effectTags,
                   "results_per_page": 5,
                   "return_details": true,
-                  "latitude" : "38.576094",
-                  "longitude": "-90.502007499999",
-                  "distance_threshold":500,
+//                  "latitude" : "38.576094",
+  //                "longitude": "-90.502007499999",
+    //              "distance_threshold":500,
                 };
 
                 request({url:url, qs:request_parameters}, function(err,reponse,body)
