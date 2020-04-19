@@ -1,13 +1,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="html_library/jquery.caret.js"></script>
-<script src="html_library/jquery.tag-editor.min.js"></script>
+<script src="library/jquery.caret.js"></script>
+<script src="library/jquery.tag-editor.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link href="html_library/jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
+<link href="library/jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
 <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
 
-<link rel="stylesheet" href="html_library/horizontalScroll.css">
+<link rel="stylesheet" href="library/horizontalScroll.css">
+
+<script src="library/socket.js"></script>
 
 
 
@@ -273,64 +275,18 @@ var search = document.getElementById("input").value;
   }
   else
   {
-    getValues();
+    Recommend();
   }
 });
 $("#icon").click(function()
 {
 });
-
-
-
-
-  var latitude;
-  var lonitude;
-  navigator.geolocation.getCurrentPosition(function (position)
-  {
-    latitude = position.coords.latitude;
-    lonitude = position.coords.longitude;
-  });
-
-
-  var socket = io();
-  var socketId = null;
-
-  const urlParams = new URLSearchParams(window.location.search);
-  var searchValue = urlParams.get("search");
-  var searchDispensary = urlParams.get("dispensary");
   
 /*
 --------------------------------------------
             Functions
 --------------------------------------------
 */
-  function SendSocket(id,data)
-  {
-    var obj = { ID:socketId, Data:data, latitude:latitude, longitude:lonitude };
-    socket.emit(id, obj)
-  }
-
-  function getValues(link)
-  {
-    var text = searchDispensary;
-    if(link != null)
-    {
-      text = link.innerText;
-    }
-
-    Recommend(text);
-  }
-
-  function GenerateSearch()
-  { 
-    SendSocket("GenerateSearch",searchValue);
-  }
-
-  function GenerateRecommendation()
-  {
-    SendSocket("GenerateRecommendation",searchValue);
-  }
-
   function Recommend()
   {
     var cSearchText = document.getElementById("input").value;
@@ -350,18 +306,15 @@ $("#icon").click(function()
 */
   socket.on("connect", function(data)
   {
-    socketId = socket.id;
-
-    GenerateSearch();
-    GenerateRecommendation();
+    GenerateSearch(GetSearch("search"));
+    GenerateRecommendation(GetSearch("search"));
   });
-  //get unique ID when connected.
-
+  
   socket.on("SearchResult", function(data)
   {
-    if(data.ID == socketId)
+    if(data.id == GetId())
     {
-      data =  data.Data;
+      data =  data.payload;
 
       var area = document.getElementById("searchResults");
       var search = document.getElementsByTagName("template")[0];     
@@ -373,7 +326,7 @@ $("#icon").click(function()
         var imageName = data[key].item_details.image;
         searchClone.querySelector("#searchLogo").src = "logo.png";
 
-        searchClone.querySelector("#searchName").innerText = data[key].item_name;;
+        searchClone.querySelector("#searchName").innerText = data[key].item_name;
 
         searchClone.querySelector("#searchResult").name = data[key].item_name;;
 
@@ -382,7 +335,7 @@ $("#icon").click(function()
       
       $(".link").click(function()
       {
-        window.location = "strain.html" + "?search=" + searchValue + "&strain="
+        window.location = "strain.html" + "?search=" + GetSearch("search") + "&strain="
         + this.name;
       });
     }
@@ -391,9 +344,9 @@ $("#icon").click(function()
 
   socket.on("RecommendationResult", function(data)
   {
-    if(data.ID == socketId)
+    if(data.id == GetId())
     {
-      data =  data.Data;
+      data =  data.payload;
 
 
       var ul = document.getElementById("results");
@@ -469,53 +422,25 @@ $("#icon").click(function()
 
 $(".link").click(function()
 {
-  window.location = "strain.html" + "?search=" + searchValue + "&strain="
+  window.location = "strain.html" + "?search=" + GetSearch("search") + "&strain="
   + this.name;
 });
 
     }
   });
-
-/*
---------------------------------------------
-            Tag search bar instance
---------------------------------------------
-*/
- 
-    $('#input').tagEditor({
-      initialTags: searchValue.split(","),
-      delimiter: ',\t', 
-      placeholder: 'Enter CannaGenie Tags...',
-      forceLowercase: true,
-      autocomplete: {
-        delay:0 , 
-        minLength: 1, 
-        source: function(request, response) 
-        {
-          socket.emit("search",request.term, function (data)
-          {
-            response(data);
-          });
-        }
-      }
-  });
-  
-  $("#input").keyup(function(event)
-  {
-    console.log("down");
-    if(event.keycode == 13)
-    {
-      Recommend();
-    }
-  });
-
-  $(document).keydown(function(event)
-  {
-    if(event.which == 13)
-    {
-      Recommend();
-    }
-  });
-
-
 </script>
+
+<script src="library/searchBar.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+

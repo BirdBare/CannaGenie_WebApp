@@ -1,12 +1,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="html_library/jquery.caret.js"></script>
-<script src="html_library/jquery.tag-editor.min.js"></script>
+<script src="library/jquery.caret.js"></script>
+<script src="library/jquery.tag-editor.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link href="html_library/jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
+<link href="library/jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
 <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
-
+<script src="library/socket.js"></script>
 
 
 <style>
@@ -176,7 +176,13 @@ border-style:solid;
 </div>
 </body>
 
+
 <script>
+
+          
+//                  Javascript events
+
+
 $("#icon").click(function()
 {
 });
@@ -194,78 +200,20 @@ var search = document.getElementById("input").value;
   }
   else
   {
-    getValues();
+   var cSearchText = document.getElementById("input").value;
+
+    if(cSearchText.length > 0)
+    {
+      socket.close();
+      window.location = "results.html?" + "search=" + cSearchText + 
+        "&page=" + 1;  
+    }
   }
 });
 
 $(".link").click(function() { window.location = this.id + ".html"; });
 </script>
 
-<script>
-  var socket = io();
-  var socketId = "";
 
-/*
---------------------------------------------
-            Functions
---------------------------------------------
-*/
-  function SendSocket(id,data)
-  {
-    var obj = { ID:socketId, Data:data };
-    socket.emit(id, obj)
-  }
+<script src="library/searchBar.js"></script>
 
-  function getValues()
-  {
-    var cSearchText = document.getElementById("input").value;
-    document.getElementById("input").value = "";
-
-    if(cSearchText.length > 0)
-    {
-      socket.close();
-      window.location = "results.html?" + "search=" + cSearchText + 
-        "&page=" + 1;
-    }
-  }
-/*
---------------------------------------------
-            Socket functions
---------------------------------------------
-*/
-  socket.on("connect", function(data)
-  {
-    socketId = socket.id;
-  });
-  //get unique ID when connected.
-/*
---------------------------------------------
-            Tag search bar instance
---------------------------------------------
-*/
-  $('#input').tagEditor({
-      initialTags: [],
-      delimiter: ',\t', 
-      placeholder: 'Enter CannaGenie Tags...',
-      forceLowercase: true,
-      autocomplete: {
-        delay:0 , 
-        minLength: 1, 
-        source: function(request, response) 
-        {
-          socket.emit("search",request.term, function (data)
-          {
-            response(data);
-          });
-        }
-      }
-  });
-
-  $(document).keypress(function(event)
-  {
-    if(event.which == 13)
-    {
-      Recommend();
-    }
-  });
-</script>

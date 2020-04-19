@@ -25,10 +25,9 @@ io.on("connection", function(socket)
   socket.emit("connect","");
   //emit on connection to send socket.id
 
-  socket.on("GenerateSearch", function(data)
+  socket.on("GenerateSearch", function(req)
   {
-    var socketId = data.ID;
-    data = data.Data;
+    data = req.payload.values;
     //extract data from data ID object
 
      console.log(data); 
@@ -47,19 +46,18 @@ io.on("connection", function(socket)
 	      {
           var searchData = JSON.parse(body).result;
 
-          var obj = {ID:socketId, Data:searchData};
+          var obj = {id:req.id, payload:searchData};
           io.emit("SearchResult", obj);
         }
       });
        
   });
 
-  socket.on("GenerateRecommendation", function(data)
+  socket.on("GenerateRecommendation", function(req)
   {
-    var socketId = data.ID;
-    var latitude = data.latitude;
-    var longitude = data.longitude;
-    var data = data.Data;
+    var latitude = req.payload.latitude;
+    var longitude = req.payload.longitude;
+    var data = req.payload.values;
     //extract data from data ID object
 
     if(data.length > 0)
@@ -153,7 +151,7 @@ io.on("connection", function(socket)
 	                else
 	                {
                     var result = JSON.parse(body).recommendations.results;
-                    var obj = {ID:socketId, Data:result};
+                    var obj = {id:req.id, payload:result};
                     io.emit("RecommendationResult", obj);
                     //send result to client side in non JSON format.
 	                }
