@@ -47,6 +47,8 @@ io.on("connection", function(socket)
 	      {
           var apiStrain =
             JSON.parse(body).result.result.toString().toLowerCase().split(",");
+        }
+      });
        
   });
 
