@@ -46,7 +46,7 @@ io.on("connection", function(socket)
 	      else
 	      {
           var apiStrain =
-            JSON.parse(body).result.result.toString().toLowerCase().split(",");
+            JSON.parse(body);
         }
       });
        
