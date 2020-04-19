@@ -44,6 +44,7 @@ overflow-x: auto;
 .link
 {
 cursor:pointer;
+z-index:100;
 
 }
 
@@ -216,7 +217,7 @@ width:600px;
     <template>
       <div id="searchResult" class="horizontalScrollItem link">
         <center>
-          <img id="searchLogo" src="logo.png">
+          <img id="searchLogo" src="logo.png" >
           <div id="searchName"></div>
         </center>
       </div>
@@ -230,8 +231,8 @@ width:600px;
   <li id="resultArea">
   
   <div id="strainArea">
-    <img id="strainIcon" src="logo.png" alt="picture of Bubble gum" >
-    <span id="strainTitle" class="result">Super Lemon Haze - </span>
+    <img id="strainIcon" src="logo.png" class="link" >
+    <span id="strainTitle" class="result link">Super Lemon Haze - </span>
     <span id="strainMatch" class="result">Match 40% - </span>
     <span id="strainRating" class="result">Rating: </span>
     <span id="strainRatingIcons"> 
@@ -286,11 +287,6 @@ var search = document.getElementById("input").value;
 });
 $("#icon").click(function()
 {
-});
-
-$(".link").click(function()
-{
-  console.log("hello");
 });
 
 
@@ -386,18 +382,22 @@ $(".link").click(function()
       {
         var searchClone = search.content.cloneNode(1);
 
-        searchClone.querySelector("#searchResult").click(function()
-        {
-        
-        });
-        
         var imageName = data[key].item_details.image;
         searchClone.querySelector("#searchLogo").src = "logo.png";
 
         searchClone.querySelector("#searchName").innerText = data[key].item_name;;
 
+        searchClone.querySelector("#searchResult").name = data[key].item_name;;
+
         area.append(searchClone);
       }
+$(".link").click(function()
+{
+  window.location = "strain.html" + "?search=" + searchValue + "&strain="
+  + this.name;
+});
+
+
     }
 
     
@@ -412,8 +412,6 @@ $(".link").click(function()
 
 
       var ul = document.getElementById("results");
-  //    ul.innerHTML = "";
-      //get unordered list and clear of list items.
 
       var result = document.getElementsByTagName("template")[1];     
       var noid = document.getElementsByTagName("template")[2];     
@@ -429,6 +427,7 @@ $(".link").click(function()
         //image
         var imageName = data[key].details.image;
         liClone.querySelector("#strainIcon").src = "bud_images/" + imageName; 
+        liClone.querySelector("#strainIcon").name = data[key].name; 
 
         //cheminoids
         var terpenes = data[key].details.terpenes;
@@ -452,6 +451,7 @@ $(".link").click(function()
         
         //Title
         liClone.querySelector("#strainTitle").textContent = data[key].name; 
+        liClone.querySelector("#strainTitle").name = data[key].name; 
         liClone.querySelector("#strainMatch").textContent = 
           " - Match: " + (100*data[key].similarity).toFixed(0) + "% - Rating: "; 
         
@@ -463,6 +463,13 @@ $(".link").click(function()
       }
       //for each item in the list. Should be 15 max. Pull the needed info and put
       //into a list item. append list item to unordered list.
+
+$(".link").click(function()
+{
+  window.location = "strain.html" + "?search=" + searchValue + "&strain="
+  + this.name;
+});
+
     }
   });
 
