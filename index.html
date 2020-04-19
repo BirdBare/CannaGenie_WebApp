@@ -13,23 +13,11 @@
 
 body
 {
-position:relative;
-margin: 0;
-z-index:-1;
-  min-Width:800px;
-}
-body::after
-{
 background: url("images/background_copy.jpg");
 background-repeat: no-repeat;
 background-size:cover;
-content:'';
-position:absolute;
-top: 0;
-bottom: 0;
-right: 0;
-left: 0;
-z-index:-2;
+position:relative;
+min-Width:800px;
 }
 
 #websiteArea
@@ -228,12 +216,12 @@ $(".link").click(function() { window.location = this.id + ".html"; });
   {
     var cSearchText = document.getElementById("input").value;
     document.getElementById("input").value = "";
-    //get then reset .value incase user hit back button on result page
 
     if(cSearchText.length > 0)
     {
       socket.close();
-//      window.location = "results.html?" + "search=" + cSearchText + "&dispensary=";
+      window.location = "results.html?" + "search=" + cSearchText + 
+        "&page=" + 1;
     }
   }
 /*
