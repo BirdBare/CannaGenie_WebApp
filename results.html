@@ -25,13 +25,11 @@ font-weight: bold;
 overflow-x: scroll;
 overflow-y: hidden;
 white-space: nowrap;
-border-style: solid;
 }
 .horizontalScrollItem
 {
   display:inline-block;
   overflow:hidden;
-border-style: solid;
 }
 .horizontalScrollItemSpacer
 {
@@ -151,6 +149,19 @@ width:600px;
   position: relative;
   float:left;
 }
+#strainDescription
+{
+	position: relative;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-align:left;
+  font-family: Lucida Grande;
+  line-height: 1.5;
+  word-spacing: 1.5;
+ 
+}
 
 #dispensaryArea
 {
@@ -204,8 +215,8 @@ width:600px;
     <span id="strainRatingIcons"> 
       <img id="ratingIcon" src="logo.png" >
     </span>
-    <div id="resultTop3"> Top 3 </div>
-    <div id="resultDescription" class="">Description</div>
+    <div id="resultTop3"> </div>
+    <div id="strainDescription" class="">Description</div>
   </div>
 
   <div id="dispensaryArea">
@@ -254,105 +265,7 @@ var search = document.getElementById("input").value;
 $("#icon").click(function()
 {
 });
-
-
 </script>
-       	<style>
-       		.float-img{
-              position: relative;
-       			  float:left;
-       			  margin-right: 10px;
-       		}
-       		
-       		.container1{
-       			position: relative;
-       			overflow: hidden;
-            margin-top:40px;
-            width:750px;
-            height:135px;
-            font-family: Lucida Grande;
-       		}
-
-       		.box1{
-       			position: relative;
-       			overflow: hidden;
-            margin-top: 2.5px;
-            margin-bottom: 2.5px;
-       		}
-
-
-       		.box1_1{  
-       			position: relative;
-       			float: left;
-            font-size:15px;
-       			width: 40px;
-       			height: 35px;
-       			margin: 0px 0px 0px 0px;
-            text-align:left;
-            font-family: Lucida Grande;
-       		}
-
-       		.box2{  
-				position: relative;
-       			overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            text-align:left;
-            font-family: Lucida Grande;
-            line-height: 1.5;
-            word-spacing: 1.5;
-       		}
-       	</style>
-
-<template>
-  <li>
-		<div class="container1"> 
-			<a style="text-decoration:none" > 
-      <img id="strainPicture" src="logo.png" width="130" height="130" alt="picture of Bubble gum" class="float-img">
-      </a>
-
-      <div style="font-size: 18px; 
-                    text-align:left;
-                    margin-bottom: 0px;
-                    font-family: Lucida Grande;
-                    font-weight: bold;">
-
-          <a style="text-decoration:none" id="strainTitle" ></a>
-          <span id="strainMatch"></span>
-        </div>
-      
-      <div class="box1" id="strainNoids">
-        
-      </div>
-
-			<div id="strainDescription" class="box2">
-      </div>
-      
-      <div style="clear:both">
-      </div>
-    </div>
-  </li>
-</template>
-
-<template>
-  <div class="box1_1" id="noid"> 
-	</div>
-</template>
-
-
-
-
-
-<template>
-  <li>
-    <a href='#' style="font-family: Lucida Grande;" onClick="getValues(this)">Illinois dispensary</a>
-    <ul id="dispensaryResults" style="list-style-type:none;
-    margin-left:0px;"></ul>
-  </li>
-</template>
-
-
 
 
 
@@ -363,6 +276,16 @@ $("#icon").click(function()
 
 
 <script>
+  var lat;
+  var lon;
+  navigator.geolocation.getCurrentPosition(function (position)
+  {
+    lat = position.coords.latitude;
+    lon = position.coords.longitude;
+    console.log(lat + "      " + lon);
+  });
+
+
   var socket = io();
   var socketId = null;
 
@@ -370,7 +293,6 @@ $("#icon").click(function()
   var searchValue = urlParams.get("search");
   var searchDispensary = urlParams.get("dispensary");
   
-
 /*
 --------------------------------------------
             Functions
@@ -393,7 +315,17 @@ $("#icon").click(function()
     Recommend(text);
   }
 
-  function Recommend(dispensary)
+  function GenerateSearch()
+  { 
+    SendSocket("GenerateSearch",searchValue);
+  }
+
+  function GenerateRecommendation()
+  {
+    SendSocket("GenerateRecommendation",searchValue);
+  }
+
+  function Recommend()
   {
     var cSearchText = document.getElementById("input").value;
     document.getElementById("input").value = "";
@@ -402,8 +334,7 @@ $("#icon").click(function()
     if(cSearchText.length > 0)
     {
       socket.close();
-      window.location = "results.html?" + "search=" + cSearchText +
-      "&dispensary=" + dispensary;
+      window.location = "results.html?" + "search=" + cSearchText;
     }
   }
 /*
@@ -417,11 +348,12 @@ $("#icon").click(function()
 
         console.log(searchValue);
 
-    SendSocket("recommend", searchValue);
+    GenerateSearch();
+    GenerateRecommendation();
   });
   //get unique ID when connected.
 
-  socket.on("result", function(data)
+  socket.on("RecommendationResult", function(data)
   {
     if(data.ID == socketId)
     {
@@ -432,10 +364,10 @@ $("#icon").click(function()
   //    ul.innerHTML = "";
       //get unordered list and clear of list items.
 
-      var result = document.getElementsByTagName("template")[0];     
-      var noid = document.getElementsByTagName("template")[1];     
+      var result = document.getElementsByTagName("template")[1];     
+      var noid = document.getElementsByTagName("template")[2];     
 
-      console.log(data[5].details);
+      console.log(data[4].details);
 
       
       for(var key in data)
@@ -447,8 +379,8 @@ $("#icon").click(function()
         var imageName = data[key].details.image;
         if(imageName.length != 0)
         {
-          liClone.querySelector("#strainPicture").src = 
-            "bud_images/" + imageName;; 
+          liClone.querySelector("#strainIcon").src = 
+            "bud_images/" + imageName; 
         }
 
         //cheminoids
@@ -464,10 +396,10 @@ $("#icon").click(function()
           terpeneArray.forEach(function(item) 
           {
 
-          var noidClone = noid.content.cloneNode(true);
-            noidClone.querySelector("#noid").innerText = 
-              item[1] + "\n" + parseFloat(terpenes[item[0]]).toFixed(1) + "%";
-            liClone.querySelector("#strainNoids").appendChild(noidClone);
+          //var noidClone = noid.content.cloneNode(true);
+            //noidClone.querySelector("#noid").innerText = 
+              //item[1] + "\n" + parseFloat(terpenes[item[0]]).toFixed(1) + "%";
+            //liClone.querySelector("#strainNoids").appendChild(noidClone);
           });
         }
         

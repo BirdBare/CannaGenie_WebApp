@@ -25,7 +25,32 @@ io.on("connection", function(socket)
   socket.emit("connect","");
   //emit on connection to send socket.id
 
-  socket.on("recommend", function(data)
+  socket.on("GenerateSearch", function(data)
+  {
+    var socketId = data.ID;
+    data = data.Data;
+    //extract data from data ID object
+      
+      const url = baseURL + "api/multidisambiguate";
+      const request_parameters = 
+      {  
+        "category": "strain",
+        "results_per_page" : "200000",
+      };
+
+      request({url:url, qs:request_parameters}, function(err,reponse,body)
+      {
+	      if(reponse.statusCode == "404")
+	      {
+	      }
+	      else
+	      {
+          var apiStrain =
+            JSON.parse(body).result.result.toString().toLowerCase().split(",");
+       
+  });
+
+  socket.on("GenerateRecommendation", function(data)
   {
     var socketId = data.ID;
     data = data.Data;
@@ -105,7 +130,11 @@ io.on("connection", function(socket)
                 {  
                   "liked_strains": strainTags,
                   "desired_effects": effectTags,
+                  "results_per_page": 5,
                   "return_details": true,
+                  "latitude" : "38.576094",
+                  "longitude": "-90.502007499999",
+                  "distance_threshold":500,
                 };
 
                 request({url:url, qs:request_parameters}, function(err,reponse,body)
@@ -117,7 +146,7 @@ io.on("connection", function(socket)
 	                {
                     var result = JSON.parse(body).recommendations.results;
                     var obj = {ID:socketId, Data:result};
-                    io.emit("result", obj);
+                    io.emit("RecommendationResult", obj);
                     //send result to client side in non JSON format.
 	                }
                 });
@@ -140,7 +169,7 @@ io.on("connection", function(socket)
     const url = baseURL + "api/search";
     const request_parameters = 
     { 
-    "text": data,
+    "input": data,
     "category": "",
     "page" : "",
     "results_per_page" : "100",
