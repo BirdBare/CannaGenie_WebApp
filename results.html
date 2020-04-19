@@ -1,13 +1,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="jquery.caret.js"></script>
-<script src="jquery.tag-editor.min.js"></script>
+<script src="html_library/jquery.caret.js"></script>
+<script src="html_library/jquery.tag-editor.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link href="jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
+<link href="html_library/jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
 <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
 
-
+<link rel="stylesheet" href="html_library/horizontalScroll.css">
 
 
 
@@ -20,42 +20,18 @@ margin-bottom: 0px;
 font-family: Lucida Grande;
 font-weight: bold;
 }
-.horizontalScrollArea
-{
-margin-top:20px;
-overflow-x: hidden;
-overflow-y: hidden;
-white-space: nowrap;
-}
-.horizontalScrollArea:hover
-{
-overflow-x: auto;
-}
-.horizontalScrollItem
-{
-  display:inline-block;
-  overflow:hidden;
-}
-.horizontalScrollItemSpacer
-{
-  width:10px;
-  display:inline-block;
-}
 .link
 {
 cursor:pointer;
 z-index:100;
-
 }
-
-
 
 body
 {
 position:relative;
 margin: 0;
 z-index:-1;
-  min-Width:800px;
+  min-Width:1000px;
 }
 
 #header
@@ -124,16 +100,22 @@ margin-top: 40px;
 margin-right: 20px;
 }
 
-#searchArea
+#searchResults
 {
 margin-left:125px;
-height:190px;
+height:200px;
 width:600px;
 }
 #searchResult
 {
+  margin-top:20;
   height:200px;
   width:180px;
+}
+#searchLogo
+{
+  height:150;
+  width:180;
 }
 
 #results
@@ -149,6 +131,7 @@ width:600px;
 
 #strainArea
 {
+  margin-bottom:10px;
   width:620px;
   height:100px;
   float:left;
@@ -167,7 +150,7 @@ width:600px;
 	position: relative;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   text-align:left;
   font-family: Lucida Grande;
@@ -183,6 +166,15 @@ width:600px;
   height:100px;
   float:left;
 }
+#dispensaryName
+{
+  font-weight:bold;
+}
+#dispensaryResults
+{
+margin-top:10px;
+
+}
 
 #ratingIcon
 {
@@ -191,11 +183,7 @@ width:600px;
 
 }
 
-#searchLogo
-{
-  height:150;
-  width:180;
-}
+
 
 </style>
 <body>
@@ -212,8 +200,7 @@ width:600px;
   <img id="icon" src="images/logo/user.png">
 </div>
 
-<div id="searchArea" class="horizontalScrollArea">
-  <div id="searchResults">
+<div id="searchResults" class="horizontalScrollArea">
     <template>
       <div id="searchResult" class="horizontalScrollItem link">
         <center>
@@ -223,7 +210,6 @@ width:600px;
       </div>
       <div class="horizontalScrollItemSpacer"></div>
     </template>
-  </div>
 </div>
 
 <ul id="results">
@@ -243,17 +229,12 @@ width:600px;
   </div>
 
   <div id="dispensaryArea">
+  <br>
     <div id="dispensaryHeader">
-      Available At
+      Availability
     </div>
     <div class="horizontalScrollArea">
       <div id="dispensaryResults">
-      <template>
-        <div id="dispensaryResult" class="horizontalScrollItem link">
-          <div id="dispensaryName"></div>
-          <div id="dispensaryDistance"></div>
-        </div>
-      </template>
     </div>
   </div>
 
@@ -261,6 +242,16 @@ width:600px;
 
   </li>
   </template>
+
+      <template>
+        <div id="dispensaryResult" class="horizontalScrollItem link">
+          <center>
+          <div id="dispensaryName"></div>
+          <div id="dispensaryDistance"></div>
+          </center>
+        </div>
+        <div class="horizontalScrollItemSpacer"></div>
+      </template>
 </ul>
 
 <body>
@@ -292,13 +283,12 @@ $("#icon").click(function()
 
 
 
-  var lat;
-  var lon;
+  var latitude;
+  var lonitude;
   navigator.geolocation.getCurrentPosition(function (position)
   {
-    lat = position.coords.latitude;
-    lon = position.coords.longitude;
-    console.log(lat + "      " + lon);
+    latitude = position.coords.latitude;
+    lonitude = position.coords.longitude;
   });
 
 
@@ -316,7 +306,7 @@ $("#icon").click(function()
 */
   function SendSocket(id,data)
   {
-    var obj = { ID:socketId, Data:data };
+    var obj = { ID:socketId, Data:data, latitude:latitude, longitude:lonitude };
     socket.emit(id, obj)
   }
 
@@ -362,8 +352,6 @@ $("#icon").click(function()
   {
     socketId = socket.id;
 
-        console.log(searchValue);
-
     GenerateSearch();
     GenerateRecommendation();
   });
@@ -391,16 +379,13 @@ $("#icon").click(function()
 
         area.append(searchClone);
       }
-$(".link").click(function()
-{
-  window.location = "strain.html" + "?search=" + searchValue + "&strain="
-  + this.name;
-});
-
-
+      
+      $(".link").click(function()
+      {
+        window.location = "strain.html" + "?search=" + searchValue + "&strain="
+        + this.name;
+      });
     }
-
-    
   });
 
 
@@ -414,20 +399,38 @@ $(".link").click(function()
       var ul = document.getElementById("results");
 
       var result = document.getElementsByTagName("template")[1];     
-      var noid = document.getElementsByTagName("template")[2];     
+      var dispensary = document.getElementsByTagName("template")[2];     
 
-      console.log(data[4].details);
+      console.log(data[1]);
 
-      
       for(var key in data)
       {
 
         var liClone = result.content.cloneNode(true);
+        var dispensaryUl = liClone.querySelector("#dispensaryResults");
 
         //image
         var imageName = data[key].details.image;
         liClone.querySelector("#strainIcon").src = "bud_images/" + imageName; 
         liClone.querySelector("#strainIcon").name = data[key].name; 
+
+
+        //dispensaries
+        var dispensaries = data[key].dispensary_availability;
+        if(dispensaries != undefined)
+        {
+          dispensaries.forEach(function(item)
+          {
+            dispensaryClone = dispensary.content.cloneNode(true);
+            
+            dispensaryClone.querySelector("#dispensaryResult").name = item.name;
+            dispensaryClone.querySelector("#dispensaryName").innerText = item.name;
+            dispensaryClone.querySelector("#dispensaryDistance").innerText =
+            item.distance + " mi away";
+
+            dispensaryUl.append(dispensaryClone);
+          });
+        }
 
         //cheminoids
         var terpenes = data[key].details.terpenes;

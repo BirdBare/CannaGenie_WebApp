@@ -57,7 +57,9 @@ io.on("connection", function(socket)
   socket.on("GenerateRecommendation", function(data)
   {
     var socketId = data.ID;
-    data = data.Data;
+    var latitude = data.latitude;
+    var longitude = data.longitude;
+    var data = data.Data;
     //extract data from data ID object
 
     if(data.length > 0)
@@ -129,16 +131,18 @@ io.on("connection", function(socket)
 
               if(strainTags.length > 0 || effectTags.length > 0)
               {
+                console.log(latitude);
+                console.log(longitude);
                 const url = baseURL + "api/recommend";
                 const request_parameters = 
                 {  
                   "liked_strains": strainTags,
                   "desired_effects": effectTags,
-                  "results_per_page": 5,
+                  "results_per_page": 7,
                   "return_details": true,
-//                  "latitude" : "38.576094",
-  //                "longitude": "-90.502007499999",
-    //              "distance_threshold":500,
+"latitude" : latitude,
+ "longitude": longitude,
+"distance_threshold":100000,
                 };
 
                 request({url:url, qs:request_parameters}, function(err,reponse,body)
