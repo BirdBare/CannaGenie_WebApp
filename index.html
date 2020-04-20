@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link href="library/jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
 <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
-<script src="library/socket.js"></script>
+<script src="library/url.js"></script>
 
 
 <style>
@@ -21,6 +21,7 @@ background-repeat: no-repeat;
 background-size:cover;
 position:relative;
 min-width:1025px;
+display:block;
 }
 
 #websiteArea
@@ -195,6 +196,9 @@ padding:0;
 
 
 <script>
+
+var socket = io();
+
 navigator.geolocation.getCurrentPosition(
   function (position) {},function() {}, {timeout:0});
           

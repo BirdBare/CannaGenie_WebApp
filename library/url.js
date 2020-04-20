@@ -11,5 +11,3 @@
   {
     return urlParameters[key];
   }
-
-  var socket = io();

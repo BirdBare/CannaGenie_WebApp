@@ -9,6 +9,7 @@
 
 <link rel="stylesheet" href="library/horizontalScroll.css">
 <link rel="stylesheet" href="library/header.css">
+<script src="library/url.js"></script>
 
 
 <style>
@@ -147,8 +148,6 @@ height:100px;
   border-radius: 5px;
   background-color:#87db60;
   text-align: center;
-
-
 }
 #unavailable
 {
@@ -252,7 +251,6 @@ height:100px;
 
 <body>
 
-<script src="library/socket.js"></script>
 <script>
 $("#name").click(function() { window.location = "index.html"; });
 $("#logo").click(function() { window.location = "index.html"; });
@@ -300,7 +298,7 @@ $("#icon").click(function()
             Socket functions
 --------------------------------------------
 */
-
+var socket = io();
 
   
   socket.emit("GenerateSearch", GetSearch("search"), function(data)
