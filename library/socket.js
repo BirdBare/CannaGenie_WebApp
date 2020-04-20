@@ -12,27 +12,7 @@
     return urlParameters[key];
   }
 
-
-
-
   var socket = io();
-
-  function GetId()
-  {
-    return socket.id;
-  }
-
-  function SendSocket(id,data)
-  {
-    var obj = { id:socket.id, payload:data };
-    socket.emit(id, obj)
-  }
-
-  function GenerateSearch(list)
-  { 
-    var obj = {values:list};
-    SendSocket("GenerateSearch",obj);
-  }
 
   function GenerateRecommendation(list)
   {
@@ -47,7 +27,6 @@
       var lon = position.coords.longitude;
       var obj = {values:list, latitude:lat, longitude:lon};
       SendSocket("GenerateRecommendation",obj);
-      console.log(lat);
     },
     function(error)
     { 

@@ -186,18 +186,9 @@ $("#icon").click(function()
             Socket functions
 --------------------------------------------
 */
-  socket.on("connect", function(data)
+  socket.emit("GenerateSearch", GetSearch("search"), function(data)
   {
-    GenerateSearch(GetSearch("strain"));
-  });
-  //get unique ID when connected.
-
-  socket.on("SearchResult", function(data)
-  {
-    if(data.id == GetId())
-    {
-      data =  data.payload[0];
-
+      data = data[0];
       var strainArea = document.getElementById("strainArea");
         
       console.log(data);
@@ -213,8 +204,6 @@ $("#icon").click(function()
       //description
       strainArea.querySelector("#strainDescription").innerText = data.item_details.description;
 
-
-    }
   });
 
 /*

@@ -175,7 +175,7 @@ height:100px;
   <img id="icon" src="images/logo/user_white.png">
 </div>
 
-<div class="hidden">
+<div class="">
   <div id="divider" >
     <h3 >Search Results</h3>
   </div>  
@@ -193,7 +193,7 @@ height:100px;
 </div>
 </div>
 
-<div class="hidden">
+<div class="">
   <div id="divider" >
     <h3 >Recommendation Results</h3>
   </div>  
@@ -300,19 +300,13 @@ $("#icon").click(function()
             Socket functions
 --------------------------------------------
 */
-  socket.on("connect", function(data)
-  {
-    GenerateSearch(GetSearch("search"));
-    GenerateRecommendation(GetSearch("search"));
-  });
+
+
   
-  socket.on("SearchResult", function(data)
+  socket.emit("GenerateSearch", GetSearch("search"), function(data)
   {
     var area = document.getElementById("searchResults");
 
-    if(data.id == GetId())
-    {
-      data =  data.payload;
 
       var search = document.getElementsByTagName("template")[0];     
       area.InnerHTML = "";
@@ -337,17 +331,14 @@ $("#icon").click(function()
         + this.name;
       });
 
-      document.querySelectorAll(".hidden")[0].style = "display:block";
-    }
+      //document.querySelectorAll(".hidden")[0].style = "display:block";
+    
   });
 
 
-  socket.on("RecommendationResult", function(data)
+  socket.emit("GenerateRecommendation", GetSearch("search"), function(data)
   {
     var ul = document.getElementById("results");
-    if(data.id == GetId())
-    {
-      data =  data.payload;
 
       var result = document.getElementsByTagName("template")[1];     
       var dispensary = document.getElementsByTagName("template")[2];     
@@ -430,8 +421,7 @@ $("#icon").click(function()
         window.location = "strain.html" + "?search=" + GetSearch("search") + "&strain="
           + this.name;
       });
-      document.querySelectorAll(".hidden")[1].style = "display:block";
-    }
+      //document.querySelectorAll(".hidden")[1].style = "display:block";
   });
 </script>
 

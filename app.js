@@ -57,16 +57,11 @@ request({url:url, qs:request_parameters}, function(err,reponse,body)
 //connect to socket from webpage
 io.on("connection", function(socket)
 {
-  console.log(socket.id);
   socket.emit("connect","");
   //emit on connection to send socket.id
 
-  socket.on("GenerateSearch", function(req)
+  socket.on("GenerateSearch", function(data,fn)
   {
-    data = req.payload.values;
-    //extract data from data ID object
-
-     console.log(data); 
       const url = baseURL + "api/multidisambiguate";
       const request_parameters = 
       {  
@@ -82,18 +77,18 @@ io.on("connection", function(socket)
 	      {
           var searchData = JSON.parse(body).result;
 
-          var obj = {id:req.id, payload:searchData};
-          io.emit("SearchResult", obj);
+          fn(searchData);
         }
       });
        
   });
 
-  socket.on("GenerateRecommendation", function(req)
+  socket.on("GenerateRecommendation", function(req,fn)
   {
-    var latitude = req.payload.latitude;
-    var longitude = req.payload.longitude;
-    var data = req.payload.values;
+
+    var latitude = undefined;
+    var longitude = undefined;
+    var data = req;
     //extract data from data ID object
 
     if(data.length > 0)
@@ -145,8 +140,7 @@ io.on("connection", function(socket)
 	        else
 	        {
             var result = JSON.parse(body).recommendations.results;
-            var obj = {id:req.id, payload:result};
-            io.emit("RecommendationResult", obj);
+            fn(result)
 	         }
         });
       }
