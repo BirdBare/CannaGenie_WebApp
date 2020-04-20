@@ -7,6 +7,9 @@
 <link href="library/jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
 <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
 
+<link rel="stylesheet" href="library/horizontalScroll.css">
+
+<link rel="stylesheet" href="library/header.css">
 
 
 
@@ -23,102 +26,18 @@ margin-bottom: 0px;
 font-family: Lucida Grande;
 font-weight: bold;
 }
-.horizontalScrollArea
-{
-overflow-x: scroll;
-overflow-y: hidden;
-white-space: nowrap;
-border-style: solid;
-}
-.horizontalScrollItem
-{
-  display:inline-block;
-  overflow:hidden;
-border-style: solid;
-}
-.horizontalScrollItemSpacer
-{
-  width:10px;
-  display:inline-block;
-}
-
-
 
 body
 {
 position:relative;
-margin: 0;
+margin:0;
+padding:0;
 z-index:-1;
-  min-Width:800px;
+  min-width:1025px;
+    background-color:#f0f5f5;
 }
 
-#header
-{
-position:relative;
-height:120px;
-background-color:#f7ffe3;
-}
-#logo
-{
-position:absolute;
-width:120px;
-height:80px;
-margin-left:10px;
-margin-top:10px;
-cursor:pointer;
-}
-#name
-{
-position:absolute;
-font-size:25px;
-font-family:'Lobster';
-color:#336600;
-margin-top:80px;
-margin-left:10px;
-cursor:pointer;
-}
-#input+.tag-editor
-{
-position:absolute;
-width:550px;
-z-index:0; 
-border:2px solid black;
-left:150px;
-top:50;
-}
-#help
-{
-position:absolute;
-color:black;
-left:692px;
-height:22px;
-width:27px;
-z-index:1;
-font-size:25px;
-cursor:pointer;
-top:50px;
-}
-#submit
-{
-  -webkit-transform: scaleX(-1);
-transform: scaleX(-1);
-position:absolute;
-left:710px;
-height:30;
-width:60;
-z-index:1;
-cursor:pointer;
-top:50px;
-}
-#icon
-{
-float:right;
-cursor:pointer;
-width:80px;
-height:50px;
-margin-top: 40px;
-margin-right: 20px;
-}
+
 
 #strainArea
 {
@@ -168,7 +87,7 @@ height:100px;
   <input type="text" name="input" id="input"> 
   <div id="help">?</div>
   <img id="submit" src="images/logo/submit.png">
-  <img id="icon" src="images/logo/user.png">
+  <img id="icon" src="images/logo/user_white.png">
 </div>
 
 <div id="strainArea">
@@ -199,7 +118,6 @@ height:100px;
 
   <div id="dispensaryArea">
     <div id="dispensaryHeader">
-        Available At
     </div>
     <div id="dispensaryScrollArea"class="horizontalScrollArea">
       <div id="dispensaryResults">
