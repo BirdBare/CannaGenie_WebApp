@@ -175,7 +175,7 @@ height:100px;
   <img id="icon" src="images/logo/user_white.png">
 </div>
 
-<div class="">
+<div class="hidden">
   <div id="divider" >
     <h3 >Search Results</h3>
   </div>  
@@ -193,7 +193,7 @@ height:100px;
 </div>
 </div>
 
-<div class="">
+<div class="hidden">
   <div id="divider" >
     <h3 >Recommendation Results</h3>
   </div>  
@@ -331,12 +331,33 @@ $("#icon").click(function()
         + this.name;
       });
 
-      //document.querySelectorAll(".hidden")[0].style = "display:block";
+      document.querySelectorAll(".hidden")[0].style = "display:block";
     
   });
 
+if(navigator.geolocation)
+    {
+    console.log("enabled");
+    navigator.geolocation.getCurrentPosition(function (position)
+    {
+            console.log("hello")
 
-  socket.emit("GenerateRecommendation", GetSearch("search"), function(data)
+      var lat = position.coords.latitude;
+      var lon = position.coords.longitude;
+      var obj = {values:GetSearch("search"), latitude:lat, longitude:lon};
+      socket.emit("GenerateRecommendation", obj,RecommendationResultHandler);
+    },
+    function(error)
+    { 
+      var obj = {values:GetSearch("search"), latitude:undefined, longitude:undefined};
+      socket.emit("GenerateRecommendation", obj, RecommendationResultHandler);
+    },
+    {
+      timeout:100,
+    });
+    }
+  
+  function RecommendationResultHandler(data)
   {
     var ul = document.getElementById("results");
 
@@ -421,8 +442,8 @@ $("#icon").click(function()
         window.location = "strain.html" + "?search=" + GetSearch("search") + "&strain="
           + this.name;
       });
-      //document.querySelectorAll(".hidden")[1].style = "display:block";
-  });
+      document.querySelectorAll(".hidden")[1].style = "display:block";
+  }
 </script>
 
 <script src="library/searchBar.js"></script>

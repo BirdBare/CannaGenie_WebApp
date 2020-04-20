@@ -86,9 +86,9 @@ io.on("connection", function(socket)
   socket.on("GenerateRecommendation", function(req,fn)
   {
 
-    var latitude = undefined;
-    var longitude = undefined;
-    var data = req;
+    var latitude = req.latitude;
+    var longitude = req.longitude;
+    var data = req.values;
     //extract data from data ID object
 
     if(data.length > 0)
