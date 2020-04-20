@@ -349,11 +349,14 @@ if(navigator.geolocation)
     },
     function(error)
     { 
+      console.log(error);
       var obj = {values:GetSearch("search"), latitude:undefined, longitude:undefined};
       socket.emit("GenerateRecommendation", obj, RecommendationResultHandler);
     },
     {
-      timeout:100,
+      maximumAge: 1000,
+      timeout: 1000,
+      enableHighAccuracy: false
     });
     }
   
