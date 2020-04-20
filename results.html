@@ -9,7 +9,6 @@
 
 <link rel="stylesheet" href="library/horizontalScroll.css">
 
-<script src="library/socket.js"></script>
 
 
 
@@ -34,6 +33,7 @@ position:relative;
 margin: 0;
 z-index:-1;
   min-Width:1000px;
+  background-color:#f0f5f5;
 }
 
 #header
@@ -84,6 +84,8 @@ top:50px;
 }
 #submit
 {
+-webkit-transform: scaleX(-1);
+transform: scaleX(-1);
 position:absolute;
 left:710px;
 height:30;
@@ -105,25 +107,40 @@ margin-right: 20px;
 #searchResults
 {
 margin-left:125px;
-height:200px;
-width:600px;
+height:180px;
+width:800px;
 }
 #searchResult
 {
-  margin-top:20;
   height:200px;
-  width:180px;
+  width:185px;
 }
 #searchLogo
 {
   height:150;
-  width:180;
+  width:185;
 }
-
+#searchName
+{
+font-size: 18px; 
+text-align:center;
+margin-bottom: 0px;
+font-family: Lucida Grande;
+font-weight: bold;
+}
+#divider
+{
+ border-bottom: solid;   
+ color:#336600;
+ font-family: Lucida Grande;
+ margin-left:100px;
+ width:825px;
+}
 #results
 {
   list-style-type:none; 
-  margin-left:20px;
+  margin-left:100px;
+  margin-top:30px;
   padding:0px;
 }
 #resultArea
@@ -135,14 +152,13 @@ width:600px;
 {
   margin-bottom:10px;
   width:620px;
-  height:100px;
+  height:120px;
   float:left;
 }
 #strainIcon
 {
   width:80px;
   height:100px;
-  margin-left:13px;
   margin-right:13px;
   position: relative;
   float:left;
@@ -164,7 +180,7 @@ width:600px;
 #dispensaryArea
 {
   margin-left:30px;;
-  width:300px;
+  width:170px;
   height:100px;
   float:left;
 }
@@ -175,7 +191,8 @@ width:600px;
 #dispensaryResults
 {
 margin-top:10px;
-
+margin-left:10px;
+height:100px;
 }
 
 #ratingIcon
@@ -184,8 +201,29 @@ margin-top:10px;
   height:20px;
 
 }
+.hidden
+{
+  display:none;
+}
+#available
+{
+  display:none;
+  width:100px;  
+  border-radius: 5px;
+  background-color:#87db60;
+  text-align: center;
 
 
+}
+#unavailable
+{
+  display:none;
+  background-color:#db9a60;
+  border-radius: 10px;
+  height:50px;
+  width:180px;
+  text-align: center;
+}
 
 </style>
 <body>
@@ -201,7 +239,11 @@ margin-top:10px;
   <img id="submit" src="images/logo/submit.png">
   <img id="icon" src="images/logo/user.png">
 </div>
-
+<div class="hidden">
+  <div id="divider" >
+    <h3 >Search Results</h3>
+  </div>  
+  <br>
 <div id="searchResults" class="horizontalScrollArea">
     <template>
       <div id="searchResult" class="horizontalScrollItem link">
@@ -213,7 +255,12 @@ margin-top:10px;
       <div class="horizontalScrollItemSpacer"></div>
     </template>
 </div>
+</div>
 
+<div class="hidden">
+  <div id="divider" >
+    <h3 >Recommendation Results</h3>
+  </div>  
 <ul id="results">
   <template>
   <li id="resultArea">
@@ -231,13 +278,19 @@ margin-top:10px;
   </div>
 
   <div id="dispensaryArea">
-  <br>
     <div id="dispensaryHeader">
-      Availability
+      <div id="available" >
+        <span> 
+        Available at 
+      </span>
+      </div>
+      <div id="unavailable">
+        <h3>
+        Unavilable in your Area
+        </h3>
+      </div>
     </div>
-    <div class="horizontalScrollArea">
-      <div id="dispensaryResults">
-    </div>
+      <div class="horizontalScrollArea" id="dispensaryResults">
   </div>
 
 <div style="clear:both;"></div>
@@ -255,8 +308,11 @@ margin-top:10px;
         <div class="horizontalScrollItemSpacer"></div>
       </template>
 </ul>
+</div>
 
 <body>
+
+<script src="library/socket.js"></script>
 <script>
 $("#name").click(function() { window.location = "index.html"; });
 $("#logo").click(function() { window.location = "index.html"; });
@@ -312,13 +368,15 @@ $("#icon").click(function()
   
   socket.on("SearchResult", function(data)
   {
+    var area = document.getElementById("searchResults");
+
     if(data.id == GetId())
     {
       data =  data.payload;
 
-      var area = document.getElementById("searchResults");
       var search = document.getElementsByTagName("template")[0];     
-      
+      area.InnerHTML = "";
+
       for(var key in data)
       {
         var searchClone = search.content.cloneNode(1);
@@ -338,21 +396,22 @@ $("#icon").click(function()
         window.location = "strain.html" + "?search=" + GetSearch("search") + "&strain="
         + this.name;
       });
+
+      document.querySelectorAll(".hidden")[0].style = "display:block";
     }
   });
 
 
   socket.on("RecommendationResult", function(data)
   {
+    var ul = document.getElementById("results");
     if(data.id == GetId())
     {
       data =  data.payload;
 
-
-      var ul = document.getElementById("results");
-
       var result = document.getElementsByTagName("template")[1];     
       var dispensary = document.getElementsByTagName("template")[2];     
+      ul.innerHTML = "";
 
       console.log(data[1]);
 
@@ -372,6 +431,7 @@ $("#icon").click(function()
         var dispensaries = data[key].dispensary_availability;
         if(dispensaries != undefined)
         {
+          liClone.querySelector("#available").style = "display:block;"
           dispensaries.forEach(function(item)
           {
             dispensaryClone = dispensary.content.cloneNode(true);
@@ -383,6 +443,11 @@ $("#icon").click(function()
 
             dispensaryUl.append(dispensaryClone);
           });
+        }
+        else
+        {
+          liClone.querySelector("#unavailable").style = "display:block;"
+
         }
 
         //cheminoids
@@ -418,14 +483,14 @@ $("#icon").click(function()
         ul.append(liClone);
       }
       //for each item in the list. Should be 15 max. Pull the needed info and put
-      //into a list item. append list item to unordered list.
+      //into a list item. append list item to unordered list.'
 
-$(".link").click(function()
-{
-  window.location = "strain.html" + "?search=" + GetSearch("search") + "&strain="
-  + this.name;
-});
-
+      $(".link").click(function()
+      {
+        window.location = "strain.html" + "?search=" + GetSearch("search") + "&strain="
+          + this.name;
+      });
+      document.querySelectorAll(".hidden")[1].style = "display:block";
     }
   });
 </script>

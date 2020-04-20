@@ -18,6 +18,42 @@ app.get ('/', function(request, response)
 //access local folder
 app.use('/', express.static(__dirname));
 
+var allStrains;
+var allEffects;
+
+const url = baseURL + "api/search";
+var request_parameters = 
+{   
+  "category": "strain",
+  "results_per_page" : "200000",
+};
+request({url:url, qs:request_parameters}, function(err,reponse,body)
+{
+  if(reponse.statusCode == "404")
+  {
+  }
+  else
+  {
+    allStrains = JSON.parse(body).result.result.toString().toLowerCase().split(",");
+  }
+});
+var request_parameters = 
+{   
+  "category": "effect",
+  "results_per_page" : "200000",
+};
+request({url:url, qs:request_parameters}, function(err,reponse,body)
+{
+  if(reponse.statusCode == "404")
+  {
+  }
+  else
+  {
+    allEffects = JSON.parse(body).result.result.toString().toLowerCase().split(",");
+  }
+});
+
+
 //connect to socket from webpage
 io.on("connection", function(socket)
 {
@@ -62,109 +98,59 @@ io.on("connection", function(socket)
 
     if(data.length > 0)
     {
-      /* GET ALL STRAINS AND EFFECTS FROM API */
-      const url = baseURL + "api/search";
-      const request_parameters = 
-      {  
-        "category": "strain",
-        "results_per_page" : "200000",
-      };
+      var strainTags = [];
+      var effectTags = [];
+      var garbageTags = [];
 
-      request({url:url, qs:request_parameters}, function(err,reponse,body)
+      data.split(",").forEach(element =>
       {
-	      if(reponse.statusCode == "404")
-	      {
-	      }
-	      else
-	      {
-          var apiStrain =
-            JSON.parse(body).result.result.toString().toLowerCase().split(",");
-          
-          //after getting strains, lets get effects
-          request_parameters["category"] = "effect";  
-          request({url:url, qs:request_parameters}, function(err,reponse,body)
-          {
-	          if(reponse.statusCode == "404")
-	          {
-	          }
-	          else
-	          {
-              var apiEffect =
-                JSON.parse(body).result.result.toString().toLowerCase().split(",");
-
-              //we successfully got both strains and effects, so lets filter
-              
-              data = data.split(",");
-              //data is sent as string, we need array to do index search
-
-
-              var strainTags = [];
-              var effectTags = [];
-              var garbageTags = [];
-
-              data.forEach(element =>
-              {
-                if(apiStrain.indexOf(element) != -1)
-                {
-                  strainTags.push(element);
-                }
-                else if(apiEffect.indexOf(element) != -1)
-                {
-                  effectTags.push(element);
-                }
-                else
-                {
-                  garbageTags.push(element);
-                }
-              });
-    
-              strainTags = strainTags.toString();
-              effectTags = effectTags.toString();
-              garbageTags = garbageTags.toString();
-
-              console.log("...List of Tags...");
-              console.log("Strains: " + strainTags);
-              console.log("Effects: " + effectTags);
-              console.log("Garbage: " + garbageTags);
-
-              if(strainTags.length > 0 || effectTags.length > 0)
-              {
-                console.log(latitude);
-                console.log(longitude);
-                const url = baseURL + "api/recommend";
-                const request_parameters = 
-                {  
-                  "liked_strains": strainTags,
-                  "desired_effects": effectTags,
-                  "results_per_page": 7,
-                  "return_details": true,
-"latitude" : latitude,
- "longitude": longitude,
-"distance_threshold":100000,
-                };
-
-                request({url:url, qs:request_parameters}, function(err,reponse,body)
-                {
-	                if(reponse.statusCode == "404")
-	                {
-	                }
-	                else
-	                {
-                    var result = JSON.parse(body).recommendations.results;
-                    var obj = {id:req.id, payload:result};
-                    io.emit("RecommendationResult", obj);
-                    //send result to client side in non JSON format.
-	                }
-                });
-                //end recommender request
-              }
-            }
-          });
-          //end effect search request
-	      }
+        if(allStrains.indexOf(element) != -1)
+        {
+          strainTags.push(element);
+        }
+        else if(allEffects.indexOf(element) != -1)
+        {
+          effectTags.push(element);
+        }
+        else
+        {
+          garbageTags.push(element);
+        }
       });
-      //end strain search request
-    }
+    
+      strainTags = strainTags.toString();
+      effectTags = effectTags.toString();
+      garbageTags = garbageTags.toString();
+
+      if(strainTags.length > 0 || effectTags.length > 0)
+      {
+            
+        const url = baseURL + "api/recommend";
+        const request_parameters = 
+        {  
+          "liked_strains": strainTags,
+          "desired_effects": effectTags,
+          "results_per_page": 7,
+          "return_details": true,
+          "latitude" : latitude,
+          "longitude": longitude,
+          "distance_threshold":100000,
+        };
+
+        request({url:url, qs:request_parameters}, function(err,reponse,body)
+        {
+	        if(reponse.statusCode == "404")
+	        {
+	        }
+	        else
+	        {
+            var result = JSON.parse(body).recommendations.results;
+            var obj = {id:req.id, payload:result};
+            io.emit("RecommendationResult", obj);
+	         }
+        });
+      }
+	  }
   });
   //end socket.on recommend
  

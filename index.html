@@ -14,10 +14,13 @@
 body
 {
 background: url("images/background_copy.jpg");
+margin:0;
+padding:0;
+height:100%;
 background-repeat: no-repeat;
 background-size:cover;
 position:relative;
-min-Width:800px;
+min-width:800px;
 }
 
 #websiteArea
@@ -95,10 +98,14 @@ cursor:pointer;
   position:absolute;
   width:100%;
   bottom:0;
+  padding:0px;
+  margin:0px;
+
 }
 #linkArea
 {
   position:relative;
+padding:0;
 }
 .rightLink
 {
@@ -109,6 +116,7 @@ cursor:pointer;
   cursor:pointer;
   text-decoration:underline;
   color:black;
+  font-weight: bold;
 }
 .leftLink
 {
@@ -119,12 +127,17 @@ cursor:pointer;
   cursor:pointer;
   text-decoration:underline;
   color:black;
+    font-weight: bold;
+
 }
-#annoucement
+#announcement
 {
-position:relative;
-border-style:solid;
+  height:50px;
+    padding:0px;
+    margin:0px;
+    background-color:#6bab51;
 }
+
 
 </style>
 
@@ -166,19 +179,18 @@ border-style:solid;
       </div>
       <div id="aboutUs"class="rightLink link">
         About us
+      </div>
       <div style="clear:both;"></div>
-      </div>
-    <div>
-      <div id="announcement">
-      </div>
-  </div>
+    </div>
+    <h2 id="announcement">Welcome to our alpha prototype. Please excuse our mess.</h2>
     </center>
-</div>
+  </div>
 </body>
 
 
 <script>
-
+navigator.geolocation.getCurrentPosition(
+  function (position) {},function() {}, {timeout:0});
           
 //                  Javascript events
 

@@ -38,7 +38,7 @@
   {
     if(navigator.geolocation)
     {
-    
+    console.log("enabled");
     navigator.geolocation.getCurrentPosition(function (position)
     {
             console.log("hello")
@@ -46,16 +46,17 @@
       var lat = position.coords.latitude;
       var lon = position.coords.longitude;
       var obj = {values:list, latitude:lat, longitude:lon};
-      var obj = {values:list, latitude:lat, longitude:lon};
-      //SendSocket("GenerateRecommendation",obj);
-      //console.log(lat);
-    });
-
-    }
-
+      SendSocket("GenerateRecommendation",obj);
+      console.log(lat);
+    },
+    function(error)
+    { 
       var obj = {values:list, latitude:undefined, longitude:undefined};
       SendSocket("GenerateRecommendation",obj);
 
-    
-
+    },
+    {
+      timeout:100,
+    });
+    }
   }

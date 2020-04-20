@@ -7,7 +7,7 @@
 <link href="library/jquery.tag-editor.css" rel="stylesheet" type="text/css" media="all">
 <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'>
 
-<script src="library/socket.js"></script>
+
 
 
 
@@ -100,6 +100,8 @@ top:50px;
 }
 #submit
 {
+  -webkit-transform: scaleX(-1);
+transform: scaleX(-1);
 position:absolute;
 left:710px;
 height:30;
@@ -214,6 +216,7 @@ height:100px;
 
 
 <body>
+<script src="library/socket.js"></script>
 <script>
 $("#name").click(function() { window.location = "index.html"; });
 $("#logo").click(function() { window.location = "index.html"; });
