@@ -1,5 +1,3 @@
-  
-
   var searchParams = new URLSearchParams(window.location.search);
   const urlParameters = {};
   // Display the key/value pairs

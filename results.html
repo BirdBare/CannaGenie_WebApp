@@ -67,8 +67,12 @@ font-weight: bold;
 {
  border-bottom: solid;   
  color:#336600;
+ font-size: 20px;
+ font-weight: bold;
  font-family: Lucida Grande;
  margin-left:100px;
+ margin-top:20px;
+ padding-bottom: 10px;
  width:825px;
 }
 #results
@@ -162,7 +166,6 @@ height:100px;
 </style>
 <body>
 
-
 <div id="header">
   <img id="logo" src="logo.png" >
   <div id="name">
@@ -176,28 +179,32 @@ height:100px;
 
 <div class="hidden">
   <div id="divider" >
-    <h3 >Search Results</h3>
+    <span >Search Results</span>
   </div>  
   <br>
-<div id="searchResults" class="horizontalScrollArea">
-    <template>
-      <div id="searchResult" class="horizontalScrollItem link">
-        <center>
-          <img id="searchLogo" src="logo.png" >
-          <div id="searchName"></div>
-        </center>
-      </div>
-      <div class="horizontalScrollItemSpacer"></div>
-    </template>
-</div>
+  <div id="searchResults" class="horizontalScrollArea"></div>
 </div>
 
 <div class="hidden">
   <div id="divider" >
-    <h3 >Recommendation Results</h3>
+    <span >Recommendation Results</span>
+    <span  id="filterSelector" style="float:right; cursor:pointer;"> Filter Toggle </span>
   </div>  
-<ul id="results">
-  <template>
+  <ul id="results">
+  </ul>
+</div>
+
+<template>
+  <div id="searchResult" class="horizontalScrollItem link">
+  <center>
+    <img id="searchLogo" src="logo.png" >
+    <div id="searchName"></div>
+    </center>
+  </div>
+  <div class="horizontalScrollItemSpacer"></div>
+</template>
+
+<template>
   <li id="resultArea">
   
   <div id="strainArea">
@@ -235,21 +242,22 @@ height:100px;
 <div style="clear:both;"></div>
 
   </li>
-  </template>
+</template>
 
-      <template>
-        <div id="dispensaryResult" class="horizontalScrollItem">
-          <center>
-          <div id="dispensaryName"></div>
-          <div id="dispensaryDistance"></div>
-          </center>
-        </div>
-        <div class="horizontalScrollItemSpacer"></div>
-      </template>
-</ul>
-</div>
+<template>
+  <div id="dispensaryResult" class="horizontalScrollItem">
+  <center>
+    <div id="dispensaryName"></div>
+    <div id="dispensaryDistance"></div>
+  </center>
+  </div>
+  <div class="horizontalScrollItemSpacer"></div>
+</template>
 
 <body>
+
+<script src="library/submit.js"></script>
+
 
 <script>
 $("#name").click(function() { window.location = "index.html"; });
@@ -259,21 +267,36 @@ $("#help").click(function()
 {
 });
 
-$("#submit").click(function()
+$("#icon").click(function()
 {
-var search = document.getElementById("input").value;
+});
 
-  if(search.length == 0)
+  var filterToggle = 0;
+
+$("#filterSelector").click(function()
+{
+  if(filterToggle == 0)
   {
-    //go to strain of the day
+    filterToggle = 1;
+var obj = 
+      {
+        values:GetSearch("search"), 
+        latitude:38, 
+        longitude:-90, 
+        page:GetSearch("page")};
+      socket.emit("GenerateRecommendation", obj,RecommendationResultHandler);
   }
   else
   {
-    Recommend();
+    filterToggle = 0;
+var obj = 
+      {
+        values:GetSearch("search"), 
+        latitude:undefined, 
+        longitude:undefined, 
+        page:GetSearch("page")};
+      socket.emit("GenerateRecommendation", obj,RecommendationResultHandler);
   }
-});
-$("#icon").click(function()
-{
 });
   
 /*
@@ -281,18 +304,7 @@ $("#icon").click(function()
             Functions
 --------------------------------------------
 */
-  function Recommend()
-  {
-    var cSearchText = document.getElementById("input").value;
-    document.getElementById("input").value = "";
-    //get then reset .value incase user hit back button on result page
 
-    if(cSearchText.length > 0)
-    {
-      socket.close();
-      window.location = "results.html?" + "search=" + cSearchText;
-    }
-  }
 /*
 --------------------------------------------
             Socket functions
@@ -300,7 +312,8 @@ $("#icon").click(function()
 */
 var socket = io();
 
-  
+
+
   socket.emit("GenerateSearch", GetSearch("search"), function(data)
   {
     var area = document.getElementById("searchResults");
@@ -342,13 +355,23 @@ if(navigator.geolocation)
 
       var lat = position.coords.latitude;
       var lon = position.coords.longitude;
-      var obj = {values:GetSearch("search"), latitude:lat, longitude:lon};
+      var obj = 
+      {
+        values:GetSearch("search"), 
+        latitude:lat, 
+        longitude:lon, 
+        page:GetSearch("page")};
       socket.emit("GenerateRecommendation", obj,RecommendationResultHandler);
     },
     function(error)
     { 
       console.log(error);
-      var obj = {values:GetSearch("search"), latitude:undefined, longitude:undefined};
+      var obj = 
+      {
+        values:GetSearch("search"), 
+        latitude:undefined, 
+        longitude:undefined,
+        page:GetSearch("page")};
       socket.emit("GenerateRecommendation", obj, RecommendationResultHandler);
     },
     {

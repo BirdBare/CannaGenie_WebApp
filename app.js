@@ -89,6 +89,7 @@ io.on("connection", function(socket)
     var latitude = req.latitude;
     var longitude = req.longitude;
     var data = req.values;
+    var page = req.page;
     //extract data from data ID object
 
     if(data.length > 0)
@@ -125,11 +126,13 @@ io.on("connection", function(socket)
         {  
           "liked_strains": strainTags,
           "desired_effects": effectTags,
+          "page":page,
           "results_per_page": 7,
           "return_details": true,
           "latitude" : latitude,
           "longitude": longitude,
           "distance_threshold":100000,
+          "medical":true
         };
 
         request({url:url, qs:request_parameters}, function(err,reponse,body)
